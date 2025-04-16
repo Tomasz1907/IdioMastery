@@ -9,18 +9,16 @@ import Dictionary from "./components/Dictionary/Dictionary";
 import Quiz from "./components/Quiz/Quiz";
 import Learn from "./components/Learn/Learn";
 import NotFound from "./not-found";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./FirebaseConfig";
 
 const App = () => {
-  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       const userUID = auth.currentUser?.uid.slice(-6);
-      setUser(user);
       if (!user && window.location.pathname !== "/sign-up") {
         navigate("/sign-in");
       }
