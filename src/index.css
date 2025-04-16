@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400..700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -117,4 +118,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.markazi-text {
+  font-family: "Markazi Text", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
