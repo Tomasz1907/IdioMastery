@@ -1,8 +1,8 @@
 const Footer = () => {
   return (
-    <footer className="h-[50px] flex gap-1 items-center justify-center text-sm font-semibold bg-[#b41212] text-white">
+    <footer className="h-[50px] flex gap-1 items-center justify-center text-base font-semibold bg-[#b41212] text-white drop-shadow-md">
       <p>2025 -</p>
-      <div className="flex drop-shadow-md">
+      <div className="flex ">
         <p>Idio</p>
         <p className="text-yellow-400">mastery</p>
       </div>

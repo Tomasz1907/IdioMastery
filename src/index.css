@@ -43,6 +43,13 @@
 }
 
 :root {
+  font-family: "Markazi Text", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
@@ -75,6 +82,22 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+[data-theme="light"] {
+  --bg-color: var(--color-neutral-50);
+  --text-color: var(--color-neutral-800);
+}
+
+[data-theme="dark"] {
+  --bg-color: var(--color-neutral-800);
+  --text-color: var(--color-neutral-50);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
 }
 
 .dark {
@@ -118,11 +141,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.markazi-text {
-  font-family: "Markazi Text", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
 }
