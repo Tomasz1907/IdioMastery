@@ -58,15 +58,10 @@ const Learn = () => {
         : 0;
 
       const now = new Date();
-      const todayStart = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-      ).getTime();
-      const todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1;
+      const oneMinuteInMs = 60 * 1000; // 60 seconds in milliseconds
 
-      if (lastFetch >= todayStart && lastFetch <= todayEnd) {
-        setError("You can only fetch words once per day. Try again tomorrow!");
+      if (lastFetch > now.getTime() - oneMinuteInMs) {
+        setError("You can only fetch words once per minute. Try again soon!");
         setLoading(false);
         return;
       }
