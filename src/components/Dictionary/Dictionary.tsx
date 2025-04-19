@@ -5,8 +5,9 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { ref, get } from "firebase/database";
-import { auth, database } from "@/../FirebaseConfig"; // Adjust path for firebase.ts in root
-import { EyeIcon, SearchIcon } from "lucide-react";
+import { auth, database } from "@/../FirebaseConfig";
+import { SearchIcon } from "lucide-react";
+import DictionaryTable from "../DictionaryTable";
 
 // Define the type for dictionary entries
 type DictionaryEntry = {
@@ -36,7 +37,6 @@ const Dictionary = () => {
   const [selectedEntryIndex, setSelectedEntryIndex] = useState<number | null>(
     null
   );
-  // New state for search and category filter
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -103,12 +103,10 @@ const Dictionary = () => {
     initializeAuth();
   }, []);
 
-  // Close popup
   const closePopup = () => {
     setSelectedEntryIndex(null);
   };
 
-  // Get unique categories for the filter dropdown
   const categories = useMemo(() => {
     const uniqueCategories = Array.from(
       new Set(dictionary.map((entry) => entry.category))
@@ -116,7 +114,6 @@ const Dictionary = () => {
     return ["All", ...uniqueCategories];
   }, [dictionary]);
 
-  // Filter dictionary based on search query and category
   const filteredDictionary = useMemo(() => {
     return dictionary.filter((entry) => {
       const matchesCategory =
@@ -155,7 +152,7 @@ const Dictionary = () => {
             placeholder="Search by word or definition..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full outline-none"
+            className="w-full outline-none placeholder-neutral-500"
           />
           <SearchIcon />
         </div>
@@ -165,176 +162,23 @@ const Dictionary = () => {
           className="w-full sm:w-1/3 p-2 rounded-md border-2 border-neutral-500 outline-none bg-neutral-500/20"
         >
           {categories.map((category) => (
-            <option key={category} value={category}>
+            <option
+              key={category}
+              value={category}
+              className="bg-neutral-500/50"
+            >
               {category}
             </option>
           ))}
         </select>
       </div>
-      {filteredDictionary.length > 0 ? (
-        <div className="w-full max-w-4xl">
-          {filteredDictionary.map((entry, index) => (
-            <div key={entry.id} className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">
-                Verb {index + 1} ({entry.category})
-              </h3>
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="border px-4 py-2 bg-[#b41212]/90 ">Word</th>
-                    <th
-                      className="border px-4 py-2 sm:hidden w-[50px] bg-[#b41212]/90 "
-                      style={{ width: "50px" }}
-                    >
-                      Details
-                    </th>
-                    <th className="border px-4 py-2 hidden sm:table-cell bg-[#b41212]/90 ">
-                      Definition
-                    </th>
-                    <th className="border px-4 py-2 hidden sm:table-cell bg-[#b41212]/90 ">
-                      Sentence
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
-                      {entry.translations.polish}
-                    </td>
-                    <td
-                      className="border px-4 py-2 sm:hidden w-[50px] bg-neutral-500/20 text-center"
-                      style={{ width: "50px" }}
-                    >
-                      <button
-                        onClick={() => setSelectedEntryIndex(index)}
-                        className="w-full flex items-center justify-center"
-                      >
-                        <EyeIcon className="text-blue-500" />
-                      </button>
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.definitions.polish}
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.sentences.polish}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
-                      {entry.translations.english}
-                    </td>
-                    <td
-                      className="border px-4 py-2 sm:hidden w-[50px] bg-neutral-500/20  text-center"
-                      style={{ width: "50px" }}
-                    >
-                      <button
-                        onClick={() => setSelectedEntryIndex(index)}
-                        className="w-full flex items-center justify-center"
-                      >
-                        <EyeIcon className="text-blue-500" />
-                      </button>
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.definitions.english}
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.sentences.english}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
-                      {entry.translations.spanish}
-                    </td>
-                    <td
-                      className="border px-4 py-2 sm:hidden w-[50px] bg-neutral-500/20  text-center"
-                      style={{ width: "50px" }}
-                    >
-                      <button
-                        onClick={() => setSelectedEntryIndex(index)}
-                        className="w-full flex items-center justify-center"
-                      >
-                        <EyeIcon className="text-blue-500" />
-                      </button>
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.definitions.spanish}
-                    </td>
-                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20  text-center">
-                      {entry.sentences.spanish}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center">No dictionary entries found.</p>
-      )}
-
-      {/* Popup for Mobile Details */}
-      {selectedEntryIndex !== null && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
-            <h3 className="text-lg font-semibold mb-4">
-              Verb {selectedEntryIndex + 1} Details (
-              {filteredDictionary[selectedEntryIndex].category})
-            </h3>
-            <div className="mb-4">
-              <h4 className="font-medium">Polish</h4>
-              <p>
-                <strong>Word:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].translations.polish}
-              </p>
-              <p>
-                <strong>Definition:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].definitions.polish}
-              </p>
-              <p>
-                <strong>Sentence:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].sentences.polish}
-              </p>
-            </div>
-            <div className="mb-4">
-              <h4 className="font-medium">English</h4>
-              <p>
-                <strong>Word:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].translations.english}
-              </p>
-              <p>
-                <strong>Definition:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].definitions.english}
-              </p>
-              <p>
-                <strong>Sentence:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].sentences.english}
-              </p>
-            </div>
-            <div className="mb-4">
-              <h4 className="font-medium">Spanish</h4>
-              <p>
-                <strong>Word:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].translations.spanish}
-              </p>
-              <p>
-                <strong>Definition:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].definitions.spanish}
-              </p>
-              <p>
-                <strong>Sentence:</strong>{" "}
-                {filteredDictionary[selectedEntryIndex].sentences.spanish}
-              </p>
-            </div>
-            <button
-              onClick={closePopup}
-              className="bg-red-500 text-white p-2 rounded w-full"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
+      {/* Render Dictionary Table */}
+      <DictionaryTable
+        entries={filteredDictionary}
+        selectedEntryIndex={selectedEntryIndex}
+        setSelectedEntryIndex={setSelectedEntryIndex}
+        closePopup={closePopup}
+      />
       {/* Error Message */}
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
     </div>
