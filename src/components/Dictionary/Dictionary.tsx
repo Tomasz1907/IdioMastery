@@ -6,7 +6,8 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { ref, get } from "firebase/database";
-import { auth, database } from "@/FirebaseConfig";
+import { auth, database } from "@/../FirebaseConfig"; // Adjust path for firebase.ts in root
+import { EyeIcon } from "lucide-react";
 
 // Define the type for dictionary entries
 type DictionaryEntry = {
@@ -33,24 +34,25 @@ const Dictionary = () => {
   const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState<number | null>(
+    null
+  ); // State for popup
 
   useEffect(() => {
-    const auth = getAuth();
-
     const initializeAuth = async () => {
       try {
-        // Set session persistence to `local` (persists even after page reloads)
+        // Set session persistence to local
         await setPersistence(auth, browserLocalPersistence);
 
         // Listen for auth state changes
         onAuthStateChanged(auth, async (user) => {
           if (user) {
             try {
-              const db = database;
-              const dictionaryRef = ref(db, `users/${user.uid}/dictionary`);
+              const dictionaryRef = ref(
+                database,
+                `users/${user.uid}/dictionary`
+              );
               const snapshot = await get(dictionaryRef);
-
-              console.log("Snapshot data:", snapshot.val()); // Debugging log
 
               if (snapshot.exists()) {
                 const dictionaryData: DictionaryEntry[] = [];
@@ -90,17 +92,22 @@ const Dictionary = () => {
           } else {
             setError("You must be signed in to view your dictionary.");
           }
+          setLoading(false);
         });
       } catch (err) {
         console.error("Error initializing authentication:", err);
         setError("An error occurred while restoring your session.");
-      } finally {
         setLoading(false);
       }
     };
 
     initializeAuth();
   }, []);
+
+  // Close popup
+  const closePopup = () => {
+    setSelectedEntryIndex(null);
+  };
 
   if (loading) {
     return <p className="text-center">Loading...</p>;
@@ -111,40 +118,162 @@ const Dictionary = () => {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl mb-4 text-center">Your Dictionary</h1>
-      <table className="table-auto border-collapse border border-gray-300 w-full">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Category</th>
-            <th className="border px-4 py-2">Translations</th>
-            <th className="border px-4 py-2">Sentence</th>
-            <th className="border px-4 py-2">Definition</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dictionary.map((entry) => (
-            <tr key={entry.id}>
-              <td className="border px-4 py-2">{entry.category}</td>
-              <td className="border px-4 py-2">
-                English: {entry.translations.english} <br />
-                Polish: {entry.translations.polish} <br />
-                Spanish: {entry.translations.spanish}
-              </td>
-              <td className="border px-4 py-2">
-                English: {entry.sentences.english} <br />
-                Polish: {entry.sentences.polish} <br />
-                Spanish: {entry.sentences.spanish}
-              </td>
-              <td className="border px-4 py-2">
-                English: {entry.definitions.english} <br />
-                Polish: {entry.definitions.polish} <br />
-                Spanish: {entry.definitions.spanish}
-              </td>
-            </tr>
+    <div className="flex flex-col items-center py-4 md:px-4">
+      <h1 className="text-2xl mb-4">Your Dictionary</h1>
+      {dictionary.length > 0 ? (
+        <div className="w-full max-w-4xl">
+          {dictionary.map((entry, index) => (
+            <div key={entry.id} className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">
+                Verb {index + 1} ({entry.category})
+              </h3>
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2 bg-[#b41212]/90">Word</th>
+                    <th className="border px-4 py-2 sm:hidden w-[100px] bg-[#b41212]/90">
+                      Details
+                    </th>
+                    <th className="border px-4 py-2 hidden sm:table-cell bg-[#b41212]/90">
+                      Definition
+                    </th>
+                    <th className="border px-4 py-2 hidden sm:table-cell bg-[#b41212]/90">
+                      Sentence
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
+                      {entry.translations.polish}
+                    </td>
+                    <td className="border px-4 py-2 sm:hidden bg-neutral-500/20 text-center">
+                      <button
+                        onClick={() => setSelectedEntryIndex(index)}
+                        className="w-full flex items-center justify-center"
+                      >
+                        <EyeIcon className="text-blue-500" />
+                      </button>
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.definitions.polish}
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.sentences.polish}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
+                      {entry.translations.english}
+                    </td>
+                    <td className="border px-4 py-2 sm:hidden bg-neutral-500/20 text-center">
+                      <button
+                        onClick={() => setSelectedEntryIndex(index)}
+                        className="w-full flex items-center justify-center"
+                      >
+                        <EyeIcon className="text-blue-500" />
+                      </button>
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.definitions.english}
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.sentences.english}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 bg-neutral-500/20 text-center">
+                      {entry.translations.spanish}
+                    </td>
+                    <td className="border px-4 py-2 sm:hidden bg-neutral-500/20 text-center">
+                      <button
+                        onClick={() => setSelectedEntryIndex(index)}
+                        className="w-full flex items-center justify-center"
+                      >
+                        <EyeIcon className="text-blue-500" />
+                      </button>
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.definitions.spanish}
+                    </td>
+                    <td className="border px-4 py-2 hidden sm:table-cell bg-neutral-500/20 text-center">
+                      {entry.sentences.spanish}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      ) : (
+        <p className="text-center">No dictionary entries found.</p>
+      )}
+
+      {/* Popup for Mobile Details */}
+      {selectedEntryIndex !== null && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+            <h3 className="text-lg font-semibold mb-4">
+              Verb {selectedEntryIndex + 1} Details (
+              {dictionary[selectedEntryIndex].category})
+            </h3>
+            <div className="mb-4">
+              <h4 className="font-medium">Polish</h4>
+              <p>
+                <strong>Word:</strong>{" "}
+                {dictionary[selectedEntryIndex].translations.polish}
+              </p>
+              <p>
+                <strong>Definition:</strong>{" "}
+                {dictionary[selectedEntryIndex].definitions.polish}
+              </p>
+              <p>
+                <strong>Sentence:</strong>{" "}
+                {dictionary[selectedEntryIndex].sentences.polish}
+              </p>
+            </div>
+            <div className="mb-4">
+              <h4 className="font-medium">English</h4>
+              <p>
+                <strong>Word:</strong>{" "}
+                {dictionary[selectedEntryIndex].translations.english}
+              </p>
+              <p>
+                <strong>Definition:</strong>{" "}
+                {dictionary[selectedEntryIndex].definitions.english}
+              </p>
+              <p>
+                <strong>Sentence:</strong>{" "}
+                {dictionary[selectedEntryIndex].sentences.english}
+              </p>
+            </div>
+            <div className="mb-4">
+              <h4 className="font-medium">Spanish</h4>
+              <p>
+                <strong>Word:</strong>{" "}
+                {dictionary[selectedEntryIndex].translations.spanish}
+              </p>
+              <p>
+                <strong>Definition:</strong>{" "}
+                {dictionary[selectedEntryIndex].definitions.spanish}
+              </p>
+              <p>
+                <strong>Sentence:</strong>{" "}
+                {dictionary[selectedEntryIndex].sentences.spanish}
+              </p>
+            </div>
+            <button
+              onClick={closePopup}
+              className="bg-red-500 text-white p-2 rounded w-full"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
     </div>
   );
 };

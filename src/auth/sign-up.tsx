@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { auth } from "@/FirebaseConfig";
+import { auth } from "@/../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,

@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { auth } from "@/FirebaseConfig";
+import { auth } from "@/../FirebaseConfig";
 import {
   BookIcon,
   GraduationCapIcon,

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { auth } from "@/FirebaseConfig";
+import { auth } from "@/../FirebaseConfig";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
@@ -10,7 +10,7 @@ const Menu = () => {
     <div className="w-full hidden md:flex justify-between">
       <div className="flex items-center gap-4">
         <Link to={`/${userUID}/dictionary`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             Dictionary
           </Button>
         </Link>
@@ -25,7 +25,7 @@ const Menu = () => {
           </Button>
         </Link>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center">
         <ThemeToggle />
         <Link to={`/${userUID}/profile`}>
           <Button variant="ghost" className="text-xl">

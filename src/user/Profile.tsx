@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/FirebaseConfig";
+import { auth } from "@/../FirebaseConfig";
 import { reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { toast } from "sonner";
 

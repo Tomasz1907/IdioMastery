@@ -1,3 +1,4 @@
+// App.tsx
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
@@ -10,28 +11,30 @@ import Quiz from "./components/Quiz/Quiz";
 import Learn from "./components/Learn/Learn";
 import NotFound from "./not-found";
 import { useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./FirebaseConfig";
+import { useAuth } from "@/context/AuthContext";
 
 const App = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      const userUID = auth.currentUser?.uid.slice(-6);
-      if (!user && window.location.pathname !== "/sign-up") {
-        navigate("/sign-in");
-      }
-      if (user && window.location.pathname == "/") {
-        navigate(`/${userUID}`);
-      }
-    });
-  }, [navigate]);
+    const userUID = user?.uid?.slice(-6);
+    if (!user && !loading && window.location.pathname !== "/sign-up") {
+      navigate("/sign-in");
+    }
+    if (user && window.location.pathname === "/") {
+      navigate(`/${userUID}`);
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Prevent rendering until auth resolves
+  }
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-between bg-[#EEEEEE]/10">
-      <Header />
-      <div className="flex-1  h-full p-5 md:px-16 text-lg">
+    <div className="w-full min-h-screen flex flex-col justify-between bg-neutral-900/10">
+      <Header user={user} />
+      <div className="flex-1 h-full p-5 md:px-16 text-lg">
         <Routes>
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
