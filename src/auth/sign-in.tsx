@@ -150,7 +150,7 @@ const SignInPage = () => {
 
   return (
     <div className="flex flex-col items-center my-10 gap-10 font-semibold ">
-      <div className="flex flex-col gap-5 items-center justify-center py-10 bg-neutral-500/10 rounded-xl w-80 drop-shadow-xl">
+      <div className="flex flex-col gap-5 items-center justify-center py-10 bg-neutral-500/10 rounded-xl w-full max-w-[400px] drop-shadow-xl">
         <Button
           variant="ghost"
           className="flex gap-2 ring-1"

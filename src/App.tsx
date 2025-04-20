@@ -28,7 +28,11 @@ const App = () => {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return <div>Loading...</div>; // Prevent rendering until auth resolves
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-neutral-800 text-white">
+        <p className="text-xl">Loading...</p>
+      </div>
+    ); // Prevent rendering until auth resolves
   }
 
   return (
