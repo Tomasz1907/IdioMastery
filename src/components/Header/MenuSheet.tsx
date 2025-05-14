@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 const MenuSheet = () => {
   const user = auth.currentUser;
   const userUID = user?.uid.slice(-6);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -40,30 +41,42 @@ const MenuSheet = () => {
           </SheetTitle>
           <SheetDescription />
         </SheetHeader>
-        <Link to={`/${userUID}/dictionary`}>
-          <Button variant="ghost" className="text-lg">
-            <BookIcon />
-            Dictionary
-          </Button>
-        </Link>
-        <Link to={`/${userUID}/quiz`}>
-          <Button variant="ghost" className="text-lg">
-            <ShieldQuestionIcon />
-            Quiz
-          </Button>
-        </Link>
-        <Link to={`/${userUID}/learn`}>
-          <Button variant="ghost" className="text-lg">
-            <GraduationCapIcon />
-            Learn
-          </Button>
-        </Link>
-        <Link to={`/${userUID}/profile`}>
-          <Button variant="ghost" className="text-lg">
-            <UserIcon />
-            Profile
-          </Button>
-        </Link>
+
+        {/* Navigation Links */}
+        <SheetClose asChild>
+          <Link to={`/${userUID}/dictionary`}>
+            <Button variant="ghost" className="text-lg">
+              <BookIcon />
+              Dictionary
+            </Button>
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link to={`/${userUID}/quiz`}>
+            <Button variant="ghost" className="text-lg">
+              <ShieldQuestionIcon />
+              Quiz
+            </Button>
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link to={`/${userUID}/learn`}>
+            <Button variant="ghost" className="text-lg">
+              <GraduationCapIcon />
+              Learn
+            </Button>
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
+          <Link to={`/${userUID}/profile`}>
+            <Button variant="ghost" className="text-lg">
+              <UserIcon />
+              Profile
+            </Button>
+          </Link>
+        </SheetClose>
+
+        {/* Logout Button */}
         <SheetFooter>
           <SheetClose asChild>
             <Button

@@ -9,6 +9,11 @@ const Menu = () => {
   return (
     <div className="w-full hidden md:flex justify-between">
       <div className="flex items-center gap-4">
+        <Link to={`/${userUID}/learn`}>
+          <Button variant="ghost" className="text-lg">
+            Learn
+          </Button>
+        </Link>
         <Link to={`/${userUID}/dictionary`}>
           <Button variant="ghost" className="text-lg">
             Dictionary
@@ -17,11 +22,6 @@ const Menu = () => {
         <Link to={`/${userUID}/quiz`}>
           <Button variant="ghost" className="text-lg">
             Quiz
-          </Button>
-        </Link>
-        <Link to={`/${userUID}/learn`}>
-          <Button variant="ghost" className="text-lg">
-            Learn
           </Button>
         </Link>
       </div>

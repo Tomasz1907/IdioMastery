@@ -47,7 +47,9 @@ const Dictionary = () => {
                 );
                 setDictionary(dictionaryData);
               } else {
-                setError("No saved words found in your dictionary.");
+                setError(
+                  "You don't have any saved words. You can save them on the Learn page with the star button."
+                );
               }
             } catch (err) {
               console.error("Error fetching dictionary:", err);
