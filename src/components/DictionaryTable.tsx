@@ -29,16 +29,14 @@ const DictionaryTable = ({
     const selectedVoice = voices.find((voice) =>
       lang === "es-ES"
         ? voice.lang === "es-ES" || voice.lang.startsWith("es")
-        : voice.lang === "en-US" || voice.lang.startsWith("en")
+        : voice.lang === "en-US"
     );
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-    } else {
-      console.warn(`No suitable voice found for language: ${lang}`);
     }
 
-    utterance.rate = 1;
+    utterance.rate = 0.7;
     utterance.pitch = 1;
     utterance.volume = 1;
     window.speechSynthesis.speak(utterance);
