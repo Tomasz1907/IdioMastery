@@ -178,25 +178,46 @@ const Quiz = () => {
         <div className="w-full max-w-md">
           {/* Number of Questions */}
           <div className="mb-4">
-            <label htmlFor="numQuestions" className="block mb-2 text-lg">
-              Number of Questions:
-            </label>
-            <select
-              id="numQuestions"
-              value={numQuestions || ""}
-              onChange={(e) => setNumQuestions(Number(e.target.value))}
-              className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
-              disabled={loading || entries.length === 0}
-            >
-              <option value="">--Choose Number--</option>
-              {questionOptions.map((num) => (
-                <option key={num} value={num} disabled={entries.length < num}>
-                  {num}{" "}
-                  {entries.length < num &&
-                    `(Not enough words: ${entries.length})`}
-                </option>
-              ))}
-            </select>
+            {entries.length >= 1 ? (
+              <>
+                <label htmlFor="numQuestions" className="block mb-2 text-lg">
+                  Number of Questions:
+                </label>
+                <select
+                  id="numQuestions"
+                  value={numQuestions || ""}
+                  onChange={(e) =>
+                    setNumQuestions(
+                      e.target.value === "all"
+                        ? entries.length
+                        : Number(e.target.value)
+                    )
+                  }
+                  className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
+                  disabled={loading}
+                >
+                  <option value="" disabled>
+                    {numQuestions
+                      ? numQuestions === entries.length
+                        ? `All (${entries.length})`
+                        : numQuestions
+                      : "--Choose Number--"}
+                  </option>
+                  {questionOptions
+                    .filter((num) => num <= entries.length)
+                    .map((num) => (
+                      <option key={num} value={num}>
+                        {num}
+                      </option>
+                    ))}
+                  <option value="all">All ({entries.length})</option>
+                </select>
+              </>
+            ) : (
+              <p className="text-red-500 text-center">
+                Before doing the quiz, save at least 1 word.
+              </p>
+            )}
           </div>
 
           {/* Mode Selection */}
@@ -215,7 +236,13 @@ const Quiz = () => {
                 }
                 className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
               >
-                <option value="">--Choose Mode--</option>
+                <option value="" disabled>
+                  {mode
+                    ? mode === "spanish-english"
+                      ? "Spanish to English"
+                      : "English to Spanish"
+                    : "--Choose Mode--"}
+                </option>
                 <option value="spanish-english">Spanish to English</option>
                 <option value="english-spanish">English to Spanish</option>
               </select>
