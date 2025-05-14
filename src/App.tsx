@@ -36,7 +36,7 @@ const App = () => {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-between bg-neutral-900/10">
+    <div className="w-full min-h-screen min-w-[350px] flex flex-col justify-between bg-neutral-900/10">
       <Header user={user} />
       <div className="flex-1 h-full p-5 md:px-16 text-lg">
         <Routes>

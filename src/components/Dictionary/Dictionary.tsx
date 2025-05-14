@@ -9,15 +9,7 @@ import { auth, database } from "@/../FirebaseConfig";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DictionaryTable from "../DictionaryTable";
-
-// Define the type for dictionary entries
-type DictionaryEntry = {
-  id?: string;
-  english: string;
-  spanish: string;
-  saved?: boolean;
-  timestamp?: number;
-};
+import { DictionaryEntry } from "@/lib/types/DictionaryEntry"; // Import shared type
 
 const Dictionary = () => {
   const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
@@ -118,13 +110,13 @@ const Dictionary = () => {
     <div className="flex flex-col items-center py-4 md:px-4">
       <h1 className="text-2xl mb-4 sm:text-xl">Your Saved Words</h1>
       <div className="w-full max-w-4xl mb-6 flex gap-4">
-        <div className="relative flex items-center w-full">
+        <div className="relative flex items-center w-full border-2 border-neutral-500 bg-neutral-500/10 rounded-full">
           <Input
             type="text"
             placeholder="Search by word..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pr-10"
+            className="w-full pr-10 ring-0 border-0 focus-visible:ring-0 placeholder:text-neutral-500"
           />
           <SearchIcon className="absolute right-3 w-5 h-5 text-neutral-500" />
         </div>
