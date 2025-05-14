@@ -15,12 +15,12 @@ const Menu = () => {
           </Button>
         </Link>
         <Link to={`/${userUID}/quiz`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             Quiz
           </Button>
         </Link>
         <Link to={`/${userUID}/learn`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             Learn
           </Button>
         </Link>
@@ -28,13 +28,13 @@ const Menu = () => {
       <div className="flex items-center">
         <ThemeToggle />
         <Link to={`/${userUID}/profile`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             Profile
           </Button>
         </Link>
         <Button
           variant="ghost"
-          className="text-xl"
+          className="text-lg"
           onClick={() => auth.signOut()}
         >
           Sign out

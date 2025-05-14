@@ -14,7 +14,7 @@ const Header = ({ user }: HeaderProps) => {
   const userUID = user?.uid?.slice(-6);
 
   return (
-    <nav className="h-[65px] w-full flex items-center px-5 bg-[#b41212] text-white text-xl">
+    <nav className="h-[65px] w-full flex items-center px-5 bg-[#b41212] text-white">
       <Link to={user ? `/${userUID}` : "/"}>
         <Logo />
       </Link>
@@ -26,7 +26,7 @@ const Header = ({ user }: HeaderProps) => {
       ) : (
         <div className="flex items-center justify-end w-full">
           <Link to="/sign-in">
-            <Button variant="ghost" className="text-xl">
+            <Button variant="ghost" className="text-lg">
               Sign In
             </Button>
           </Link>

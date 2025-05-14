@@ -41,25 +41,25 @@ const MenuSheet = () => {
           <SheetDescription />
         </SheetHeader>
         <Link to={`/${userUID}/dictionary`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             <BookIcon />
             Dictionary
           </Button>
         </Link>
         <Link to={`/${userUID}/quiz`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             <ShieldQuestionIcon />
             Quiz
           </Button>
         </Link>
         <Link to={`/${userUID}/learn`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             <GraduationCapIcon />
             Learn
           </Button>
         </Link>
         <Link to={`/${userUID}/profile`}>
-          <Button variant="ghost" className="text-xl">
+          <Button variant="ghost" className="text-lg">
             <UserIcon />
             Profile
           </Button>

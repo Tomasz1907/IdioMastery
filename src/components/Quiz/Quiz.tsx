@@ -4,10 +4,10 @@ import { ref, get } from "firebase/database";
 
 type DictionaryEntry = {
   id?: string;
-  category: string;
-  translations: { polish: string; english: string; spanish: string };
-  sentences: { polish: string; english: string; spanish: string };
-  definitions: { polish: string; english: string; spanish: string };
+  english: string;
+  spanish: string;
+  saved?: boolean;
+  timestamp?: number;
 };
 
 type QuizQuestion = {
@@ -20,11 +20,11 @@ type QuizQuestion = {
 };
 
 const Quiz = () => {
-  const [category, setCategory] = useState("");
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
-  const [mode, setMode] = useState("");
+  const [mode, setMode] = useState<"spanish-english" | "english-spanish" | "">(
+    ""
+  );
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
-  const [validCategories, setValidCategories] = useState<string[]>([]);
   const [quizStarted, setQuizStarted] = useState(false);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -34,27 +34,11 @@ const Quiz = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const allTopics = [
-    "food",
-    "travel",
-    "family",
-    "emotions",
-    "technology",
-    "sports",
-    "nature",
-    "daily routine",
-  ];
-  const questionOptions = [5, 10, 15, 30, 50];
-  const modes = [
-    "Polish-Spanish",
-    "Spanish-Polish",
-    "English-Spanish",
-    "Spanish-English",
-  ];
+  const questionOptions = [5, 10, 15, 20];
 
-  // Fetch valid categories on mount
+  // Fetch dictionary entries on mount
   useEffect(() => {
-    const fetchValidCategories = async () => {
+    const fetchEntries = async () => {
       setLoading(true);
       setError("");
 
@@ -69,59 +53,13 @@ const Quiz = () => {
         const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
         const snapshot = await get(dictionaryRef);
         if (snapshot.exists()) {
-          const categorySet = new Set<string>();
-          snapshot.forEach((child) => {
-            const entry = child.val();
-            if (entry.category) {
-              categorySet.add(entry.category);
-            }
-          });
-          const categories = Array.from(categorySet).filter((cat) =>
-            allTopics.includes(cat)
-          );
-          setValidCategories(["All", ...categories.sort()]);
-        } else {
-          setError("No words found in your dictionary.");
-        }
-      } catch (err) {
-        console.error("Error fetching categories:", err);
-        setError("Could not fetch categories. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchValidCategories();
-  }, []);
-
-  // Fetch dictionary entries for the selected category
-  useEffect(() => {
-    const fetchEntries = async () => {
-      setLoading(true);
-      setError("");
-      setEntries([]);
-      setNumQuestions(null);
-      setMode("");
-
-      const user = auth.currentUser;
-      if (!user || !category) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
-        const snapshot = await get(dictionaryRef);
-        if (snapshot.exists()) {
           const allEntries: DictionaryEntry[] = [];
           snapshot.forEach((child) => {
             const entry = child.val();
-            if (category === "All" || entry.category === category) {
-              allEntries.push({ ...entry, id: child.key });
-            }
+            allEntries.push({ ...entry, id: child.key });
           });
           if (allEntries.length === 0) {
-            setError("No words found for this category.");
+            setError("No words found in your dictionary.");
           } else {
             setEntries(allEntries);
           }
@@ -137,15 +75,15 @@ const Quiz = () => {
     };
 
     fetchEntries();
-  }, [category]);
+  }, []);
 
   // Generate quiz questions
   const generateQuestions = () => {
     if (!numQuestions || !mode || entries.length < numQuestions) return;
 
-    const [sourceLang, targetLang] = mode.toLowerCase().split("-") as [
-      "polish" | "spanish" | "english",
-      "polish" | "spanish"
+    const [sourceLang, targetLang] = mode.split("-") as [
+      "english" | "spanish",
+      "english" | "spanish"
     ];
 
     const shuffledEntries = [...entries]
@@ -153,14 +91,14 @@ const Quiz = () => {
       .slice(0, numQuestions);
 
     const newQuestions: QuizQuestion[] = shuffledEntries.map((entry) => {
-      const word = entry.translations[sourceLang];
-      const correctTranslation = entry.translations[targetLang];
+      const word = entry[sourceLang];
+      const correctTranslation = entry[targetLang];
 
       const otherEntries = entries.filter((e) => e.id !== entry.id);
-      const incorrectOptions: any[] = [];
+      const incorrectOptions: string[] = [];
       while (incorrectOptions.length < 2 && otherEntries.length > 0) {
         const randomIndex = Math.floor(Math.random() * otherEntries.length);
-        const option = otherEntries[randomIndex].translations[targetLang];
+        const option = otherEntries[randomIndex][targetLang];
         if (
           option !== correctTranslation &&
           !incorrectOptions.includes(option)
@@ -221,7 +159,6 @@ const Quiz = () => {
 
   // Reset quiz
   const resetQuiz = () => {
-    setCategory("");
     setNumQuestions(null);
     setMode("");
     setQuizStarted(false);
@@ -239,51 +176,28 @@ const Quiz = () => {
 
       {!quizStarted && endTime === null && (
         <div className="w-full max-w-md">
-          {/* Category Selection */}
+          {/* Number of Questions */}
           <div className="mb-4">
-            <label htmlFor="category" className="block mb-2 text-lg">
-              Select a Category:
+            <label htmlFor="numQuestions" className="block mb-2 text-lg">
+              Number of Questions:
             </label>
             <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              id="numQuestions"
+              value={numQuestions || ""}
+              onChange={(e) => setNumQuestions(Number(e.target.value))}
               className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
-              disabled={loading || validCategories.length === 0}
+              disabled={loading || entries.length === 0}
             >
-              <option value="">--Choose a Category--</option>
-              {validCategories.map((cat, index) => (
-                <option key={index} value={cat}>
-                  {cat}
+              <option value="">--Choose Number--</option>
+              {questionOptions.map((num) => (
+                <option key={num} value={num} disabled={entries.length < num}>
+                  {num}{" "}
+                  {entries.length < num &&
+                    `(Not enough words: ${entries.length})`}
                 </option>
               ))}
             </select>
           </div>
-
-          {/* Number of Questions */}
-          {category && (
-            <div className="mb-4">
-              <label htmlFor="numQuestions" className="block mb-2 text-lg">
-                Number of Questions:
-              </label>
-              <select
-                id="numQuestions"
-                value={numQuestions || ""}
-                onChange={(e) => setNumQuestions(Number(e.target.value))}
-                className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
-                disabled={loading || entries.length === 0}
-              >
-                <option value="">--Choose Number--</option>
-                {questionOptions.map((num) => (
-                  <option key={num} value={num} disabled={entries.length < num}>
-                    {num}{" "}
-                    {entries.length < num &&
-                      `(Not enough words: ${entries.length})`}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           {/* Mode Selection */}
           {numQuestions && (
@@ -294,21 +208,22 @@ const Quiz = () => {
               <select
                 id="mode"
                 value={mode}
-                onChange={(e) => setMode(e.target.value)}
+                onChange={(e) =>
+                  setMode(
+                    e.target.value as "spanish-english" | "english-spanish"
+                  )
+                }
                 className="w-full p-2 rounded-md outline-none bg-neutral-700 text-white"
               >
                 <option value="">--Choose Mode--</option>
-                {modes.map((m, index) => (
-                  <option key={index} value={m}>
-                    {m}
-                  </option>
-                ))}
+                <option value="spanish-english">Spanish to English</option>
+                <option value="english-spanish">English to Spanish</option>
               </select>
             </div>
           )}
 
           {/* Start Quiz Button */}
-          {category && numQuestions && mode && (
+          {numQuestions && mode && (
             <button
               onClick={generateQuestions}
               className="bg-green-500 text-white p-2 rounded-md w-full hover:bg-green-600 transition disabled:bg-gray-400"
@@ -359,42 +274,38 @@ const Quiz = () => {
             Time Taken: {((endTime - (startTime || 0)) / 1000).toFixed(2)}{" "}
             seconds
           </p>
-          <h3 className="text-lg font-semibold mb-2">Review</h3>
-          {questions.map((q, index) => (
-            <div key={index} className="mb-6">
-              <p className="text-md mb-2">
-                Question {index + 1}: Translate <strong>{q.word}</strong> (
-                {q.sourceLang} to {q.targetLang})
-              </p>
-              <div className="grid gap-2">
-                {q.options.map((option, optIndex) => (
-                  <div
-                    key={optIndex}
-                    className={`p-3 rounded-md text-white ${
-                      option === q.correctTranslation && q.userAnswer === option
-                        ? "bg-green-500"
-                        : option === q.correctTranslation
-                        ? "bg-green-500"
-                        : option === q.userAnswer
-                        ? "bg-red-500"
-                        : "bg-gray-500"
-                    }`}
-                  >
-                    {String.fromCharCode(97 + optIndex)}. {option}
-                    {option === q.userAnswer && (
-                      <span className="ml-2">
-                        (Your answer:{" "}
-                        {q.userAnswer === q.correctTranslation
-                          ? "Correct"
-                          : "Incorrect"}
-                        )
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+
+          {/* Display All Questions */}
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-4">Review Questions:</h3>
+            <ul className="space-y-4">
+              {questions.map((q, index) => (
+                <li key={index} className="p-4 border rounded-md">
+                  <p className="text-lg mb-2">
+                    <strong>Question {index + 1}:</strong> Translate{" "}
+                    <strong>{q.word}</strong> ({q.sourceLang} to {q.targetLang})
+                  </p>
+                  <ul className="space-y-2">
+                    {q.options.map((option, i) => (
+                      <li
+                        key={i}
+                        className={`p-2 rounded-md ${
+                          option === q.correctTranslation
+                            ? "bg-green-200 text-green-800"
+                            : option === q.userAnswer
+                            ? "bg-red-200 text-red-800"
+                            : "bg-gray-100"
+                        }`}
+                      >
+                        {String.fromCharCode(97 + i)}. {option}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <button
             onClick={resetQuiz}
             className="bg-blue-500 text-white p-2 rounded-md mt-4 hover:bg-blue-600 transition text-center w-full"

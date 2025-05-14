@@ -1,207 +1,159 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth, database } from "@/../FirebaseConfig";
-import { ref, push, get, set } from "firebase/database";
-import DictionaryTable from "../DictionaryTable"; // Adjust path as needed
+import { ref, push, remove } from "firebase/database";
+import DictionaryTable from "../DictionaryTable";
+import Papa from "papaparse";
 
-// Define the type for dictionary entries to match DictionaryTable
+// Define the type for dictionary entries
 type DictionaryEntry = {
   id?: string;
-  category: string;
-  translations: { polish: string; english: string; spanish: string };
-  sentences: { polish: string; english: string; spanish: string };
-  definitions: { polish: string; english: string; spanish: string };
+  english: string;
+  spanish: string;
+  saved?: boolean;
+  timestamp?: number;
 };
 
 const Learn = () => {
-  const [topic, setTopic] = useState("");
-  const [data, setData] = useState<DictionaryEntry[]>([]);
+  const [words, setWords] = useState<DictionaryEntry[]>([]);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [selectedVerbIndex, setSelectedVerbIndex] = useState<number | null>(
-    null
-  );
+  const [loading, setLoading] = useState(true);
 
-  const topics = [
-    "food",
-    "travel",
-    "family",
-    "emotions",
-    "technology",
-    "sports",
-    "nature",
-    "daily routine",
-  ];
+  // Load CSV and select 10 random words on mount
+  useEffect(() => {
+    const loadWords = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const csvUrl = "/src/data/englishspanish.csv";
+        console.log("Fetching CSV from:", csvUrl);
+        const response = await fetch(csvUrl, {
+          headers: {
+            Accept: "text/csv; charset=utf-8",
+          },
+        });
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(
+              "CSV file not found at /src/data/englishspanish.csv. Please ensure the file exists."
+            );
+          }
+          throw new Error(
+            `Failed to load CSV file: ${response.status} ${response.statusText}`
+          );
+        }
+        const csvText = await response.text();
 
-  const handleFetchWords = async () => {
-    setError("");
-    setData([]);
-    setLoading(true);
+        // Parse CSV using PapaParse
+        const parsed = Papa.parse<DictionaryEntry>(csvText, {
+          header: false,
+          skipEmptyLines: true,
+          complete: (result) => result.data,
+          error: (error) => {
+            throw new Error(`Error parsing CSV: ${error.message}`);
+          },
+        });
 
+        // Skip header and validate rows
+        const parsedWords = parsed.data
+          .filter((row, index) => {
+            if (index === 0 && row[0]?.toLowerCase() === "english") {
+              return false; // Skip header
+            }
+            if (!row[0]?.trim() || !row[1]?.trim()) {
+              console.warn(`Skipping invalid CSV line: ${row}`);
+              return false;
+            }
+            return true;
+          })
+          .map(([english, spanish]) => ({ english, spanish }));
+
+        if (parsedWords.length < 10) {
+          throw new Error(
+            `Not enough valid words in CSV. Found ${parsedWords.length} words, need at least 10.`
+          );
+        }
+
+        // Select 10 random words
+        const shuffled = parsedWords.sort(() => Math.random() - 0.5);
+        const selectedWords = shuffled.slice(0, 10);
+        setWords(selectedWords);
+      } catch (err: any) {
+        console.error("Error loading words:", err.message);
+        setError(`Could not load words: ${err.message}.`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadWords();
+  }, []);
+
+  // Handle saving a word to Firebase
+  const handleSaveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user) {
-      setError("Please sign in to fetch words.");
-      setLoading(false);
-      return;
-    }
-
-    if (!topic) {
-      setError("Please select a topic.");
-      setLoading(false);
+      setError("Please sign in to save words.");
       return;
     }
 
     try {
-      const lastFetchRef = ref(database, `users/${user.uid}/lastFetch`);
-      const lastFetchSnapshot = await get(lastFetchRef);
-      const lastFetch = lastFetchSnapshot.exists()
-        ? lastFetchSnapshot.val()
-        : 0;
-
-      const now = new Date();
-      const oneMinuteInMs = 60 * 1000; // 60 seconds in milliseconds
-
-      if (lastFetch > now.getTime() - oneMinuteInMs) {
-        setError("You can only fetch words once per minute. Try again soon!");
-        setLoading(false);
-        return;
-      }
-
-      const apiUrl = import.meta.env.VITE_API_URL;
-      if (!apiUrl) {
-        throw new Error("API URL is missing in environment variables.");
-      }
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `Provide 20 Polish-English-Spanish verbs related to the topic "${topic}". For each verb, include a short sentence using the verb and a short definition. Format the output as pipe-separated values: polish|english|spanish|polishSentence|englishSentence|spanishSentence|polishDefinition|englishDefinition|spanishDefinition. One verb per line.`,
-                },
-              ],
-            },
-          ],
-        }),
-      });
-
-      const apiData = await response.json();
-
-      if (response.ok && apiData.candidates?.[0]?.content?.parts?.[0]?.text) {
-        const rows: DictionaryEntry[] =
-          apiData.candidates[0].content.parts[0].text
-            .split("\n")
-            .filter((line: string) => line.trim() !== "")
-            .map((line: string) => {
-              const [
-                polish,
-                english,
-                spanish,
-                polishSentence,
-                englishSentence,
-                spanishSentence,
-                polishDefinition,
-                englishDefinition,
-                spanishDefinition,
-              ] = line.split("|").map((item: string) => item.trim());
-              return {
-                category: topic,
-                translations: { polish, english, spanish },
-                sentences: {
-                  polish: polishSentence,
-                  english: englishSentence,
-                  spanish: spanishSentence,
-                },
-                definitions: {
-                  polish: polishDefinition,
-                  english: englishDefinition,
-                  spanish: spanishDefinition,
-                },
-              };
-            });
-
-        if (rows.length < 20) {
-          throw new Error("API returned fewer than 20 verbs.");
-        }
-
-        setData(rows);
-
-        const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
-        rows.forEach((row) => {
-          const newDictionaryEntry = {
-            category: row.category,
-            translations: row.translations,
-            sentences: row.sentences,
-            definitions: row.definitions,
-          };
-          push(dictionaryRef, newDictionaryEntry);
-        });
-
-        await set(lastFetchRef, now.getTime());
-      } else {
-        throw new Error(apiData.error?.message || "Failed to fetch words.");
-      }
+      const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
+      const newEntry = {
+        english: word.english,
+        spanish: word.spanish,
+        timestamp: Date.now(),
+      };
+      const newWordRef = await push(dictionaryRef, newEntry);
+      // Update local state to show word is saved
+      setWords((prev) =>
+        prev.map((w, i) =>
+          i === index ? { ...w, saved: true, id: newWordRef.key } : w
+        )
+      );
     } catch (err) {
-      console.error("Error fetching words:", err);
-      setError("Could not fetch the words. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("Error saving word:", err);
+      setError("Could not save word. Please try again.");
     }
   };
 
-  const closePopup = () => {
-    setSelectedVerbIndex(null);
+  // Handle removing a word from Firebase
+  const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
+    const user = auth.currentUser;
+    if (!user || !word.id) {
+      setError("Please sign in to remove words.");
+      return;
+    }
+
+    try {
+      const wordRef = ref(database, `users/${user.uid}/dictionary/${word.id}`);
+      await remove(wordRef);
+      // Update local state to show word is no longer saved
+      setWords((prev) =>
+        prev.map((w, i) =>
+          i === index ? { ...w, saved: false, id: undefined } : w
+        )
+      );
+    } catch (err) {
+      console.error("Error removing word:", err);
+      setError("Could not remove word. Please try again.");
+    }
   };
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl mb-4">Learn Polish-English-Spanish Verbs</h1>
+      <h1 className="text-2xl mb-4 sm:text-xl">Learn English-Spanish Words</h1>
 
-      <div className="mb-4">
-        <label htmlFor="topic" className="block mb-2">
-          Select a Topic:
-        </label>
-        <select
-          id="topic"
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          className="p-2 border rounded bg-neutral-500/50"
-        >
-          <option value="">--Choose a Topic--</option>
-          {topics.map((t, index) => (
-            <option key={index} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button
-        onClick={handleFetchWords}
-        className="bg-[#b41212] text-white p-2 rounded disabled:bg-neutral-400"
-        disabled={loading}
-      >
-        {loading ? "Fetching..." : "Get Words"}
-      </button>
-
-      {data.length > 0 && (
+      {loading && <p className="text-sm sm:text-xs">Loading words...</p>}
+      {error && <p className="mt-4 text-red-500 text-sm sm:text-xs">{error}</p>}
+      {words.length > 0 && (
         <div className="mt-4 w-full max-w-4xl">
-          <h2 className="text-xl mb-4">Your New Words</h2>
+          <h2 className="text-xl mb-4 sm:text-lg">Your Words</h2>
           <DictionaryTable
-            entries={data}
-            selectedEntryIndex={selectedVerbIndex}
-            setSelectedEntryIndex={setSelectedVerbIndex}
-            closePopup={closePopup}
+            entries={words}
+            onSaveWord={handleSaveWord}
+            onRemoveWord={handleRemoveWord}
           />
         </div>
       )}
-
-      {error && <p className="mt-4 text-red-500">{error}</p>}
     </div>
   );
 };
