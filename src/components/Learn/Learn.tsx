@@ -17,7 +17,7 @@ const Learn = () => {
       setError("");
 
       try {
-        const csvUrl = "/src/data/englishspanish.csv";
+        const csvUrl = "/englishspanish.csv";
         const response = await fetch(csvUrl, {
           headers: { Accept: "text/csv; charset=utf-8" },
         });
