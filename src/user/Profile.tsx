@@ -12,10 +12,9 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Star } from "lucide-react";
+import { AlertTriangleIcon, Star } from "lucide-react";
 
 interface DictionaryEntry {
   timestamp: number;
@@ -31,9 +30,9 @@ const Profile = () => {
   const avatarSrc = user?.photoURL || undefined;
 
   const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
-  const [timeRange, setTimeRange] = useState<
-    "day" | "week" | "month" | "year" | "all"
-  >("day");
+  const [timeRange, setTimeRange] = useState<"day" | "week" | "month" | "year">(
+    "day"
+  );
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [totalWords, setTotalWords] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -239,8 +238,8 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center text-xl">
-      <div className="flex flex-col items-center gap-5 bg-neutral-500/10 rounded w-[300px] md:w-[600px] px-5 pb-5 pt-10">
+    <div className="flex items-center justify-center text-xl w-full">
+      <div className="flex flex-col items-center gap-5 rounded  md:px-5 pb-5 pt-10 w-[350px] md:w-[600px]">
         <div className="flex items-center gap-3">
           <Avatar className="w-16 h-16 text-[#b41212] text-3xl">
             <AvatarImage src={avatarSrc} alt="avatar" />
@@ -258,7 +257,9 @@ const Profile = () => {
           <p>Total Words: {totalWords}</p>
           <Star className="text-amber-500" />
         </div>
-        <div className="flex gap-4">
+
+        {/* Responsive View Category Buttons */}
+        <div className="flex flex-wrap gap-2 justify-center mt-4">
           <Button variant="secondary" onClick={() => setTimeRange("day")}>
             Day
           </Button>
@@ -271,33 +272,42 @@ const Profile = () => {
           <Button variant="secondary" onClick={() => setTimeRange("year")}>
             Year
           </Button>
-          <Button variant="secondary" onClick={() => setTimeRange("all")}>
-            All
-          </Button>
         </div>
         <ResponsiveContainer
           width="100%"
           height={300}
-          className="bg-neutral-500/20 py-5 pr-8 rounded-xl my-2"
+          className="bg-neutral-500/20 py-5 rounded-xl my-2"
         >
-          <LineChart data={chartData}>
-            <CartesianGrid
-              strokeOpacity={0.5}
-              strokeWidth={0.5}
-              stroke="#121212"
-              enableBackground="true"
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#B41212"
-              strokeWidth={3}
-              dot={false}
-            />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-          </LineChart>
+          {chartData.length > 0 ? (
+            <LineChart
+              data={chartData}
+              margin={{ top: 10, right: 40, left: 0, bottom: 10 }}
+            >
+              <CartesianGrid
+                strokeOpacity={0.5}
+                strokeWidth={0.5}
+                stroke="#121212"
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#B41212"
+                strokeWidth={3}
+                dot={false}
+              />
+              <XAxis
+                dataKey="name"
+                padding={{ left: 0, right: 0 }}
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+            </LineChart>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p className="text-sm">Learn words to track your progress</p>
+            </div>
+          )}
         </ResponsiveContainer>
         <Button
           variant="destructive"
@@ -309,8 +319,13 @@ const Profile = () => {
 
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-            <div className="bg-neutral-500/40 backdrop-blur-lg rounded-lg p-6 w-[90%] max-w-[400px]">
-              <h2 className="text-red-500 text-lg font-bold mb-4">Warning!</h2>
+            <div className="bg-neutral-800/40 text-white backdrop-blur-lg rounded-lg p-6 w-[90%] max-w-[400px]">
+              <div className="flex gap-2">
+                <AlertTriangleIcon className="text-red-500" />
+                <h2 className="text-red-500 text-lg font-bold mb-4">
+                  Warning!
+                </h2>
+              </div>
               <p className="mb-4">
                 Deleting your account is irreversible. Please enter your
                 password to confirm.

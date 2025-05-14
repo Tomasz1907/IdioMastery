@@ -113,22 +113,20 @@ const Learn = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl mb-4 sm:text-xl">Learn English-Spanish Words</h1>
-
-      {loading && <Loader className="animate-spin" />}
+    <div className="flex flex-col items-center ">
+      {loading && <Loader className="animate-spin my-5" />}
       {error && <p className="mt-4 text-red-500 text-sm sm:text-xs">{error}</p>}
       {words.length > 0 && (
-        <div className="mt-4 w-full max-w-4xl">
-          <h2 className="text-xl mb-4 sm:text-lg">Your New Words</h2>
+        <div className="mt-4 w-full max-w-4xl text-center">
+          <h1 className="text-xl mb-4">Your New Words</h1>
           <DictionaryTable
             entries={words}
             onSaveWord={handleSaveWord}
             onRemoveWord={handleRemoveWord}
           />
-          <h2 className="text-xl mb-4 sm:text-lg">
+          <p className="text-xl mb-4 sm:text-lg">
             Refresh page to get new words!
-          </h2>
+          </p>
         </div>
       )}
     </div>

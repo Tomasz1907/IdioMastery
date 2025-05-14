@@ -34,7 +34,7 @@ const Quiz = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const questionOptions = [5, 10, 15, 20];
+  const questionOptions = [5, 10, 15, 30, 50, 100];
 
   // Fetch dictionary entries on mount
   useEffect(() => {
@@ -172,7 +172,7 @@ const Quiz = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl mb-4">Translation Quiz</h1>
+      <h1 className="text-xl mb-4">Translation Quiz</h1>
 
       {!quizStarted && endTime === null && (
         <div className="w-full max-w-md">

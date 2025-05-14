@@ -6,7 +6,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const userUID = user?.uid?.slice(-6);
   return (
-    <div className="flex flex-col items-center text-center gap-5">
+    <div className="flex flex-col items-center text-center gap-5 py-4">
       <p className="text-lg md:text-xl ">
         Welcome {user?.displayName ? user?.displayName : user?.email} !
       </p>

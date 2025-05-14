@@ -29,7 +29,7 @@ const MenuSheet = () => {
           <MenuIcon />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-5 bg-neutral-500/20 text-white backdrop-blur-xl">
+      <SheetContent className="p-5 bg-neutral-800/50 text-white backdrop-blur-xl">
         <SheetHeader>
           <SheetTitle className="border-b pb-2 text-center flex gap-2 text-lg">
             <UserIcon className="text-white rounded-full w-[50px] h-[50px] p-1" />

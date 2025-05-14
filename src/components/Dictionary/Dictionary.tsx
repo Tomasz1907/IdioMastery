@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { ref, get, remove } from "firebase/database";
 import { auth, database } from "@/../FirebaseConfig";
-import { SearchIcon } from "lucide-react";
+import { Loader, SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DictionaryTable from "../DictionaryTable";
 import { DictionaryEntry } from "@/lib/types/DictionaryEntry";
@@ -94,7 +94,11 @@ const Dictionary = () => {
   });
 
   if (loading) {
-    return <p className="text-center text-sm sm:text-xs">Loading...</p>;
+    return (
+      <div className="w-full flex items-center justify-center">
+        <Loader className="animate-spin my-5" />
+      </div>
+    );
   }
 
   if (error) {

@@ -11,6 +11,7 @@ import Learn from "./components/Learn/Learn";
 import NotFound from "./not-found";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { Loader } from "lucide-react";
 
 const App = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const App = () => {
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-neutral-800 text-white">
-        <p className="text-xl">Loading...</p>
+        <Loader className="animate-spin size-16" />
       </div>
     );
   }
