@@ -1,4 +1,3 @@
-// App.tsx
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
@@ -32,7 +31,7 @@ const App = () => {
       <div className="w-full h-screen flex items-center justify-center bg-neutral-800 text-white">
         <p className="text-xl">Loading...</p>
       </div>
-    ); // Prevent rendering until auth resolves
+    );
   }
 
   return (

@@ -18,8 +18,6 @@ const Learn = () => {
 
       try {
         const csvUrl = "/src/data/englishspanish.csv";
-
-        // Fetch the CSV file
         const response = await fetch(csvUrl, {
           headers: { Accept: "text/csv; charset=utf-8" },
         });
@@ -34,15 +32,14 @@ const Learn = () => {
 
         const csvText = await response.text();
 
-        // Parse and process the CSV data
         const parsedWords = Papa.parse<string[]>(csvText, {
           header: false,
           skipEmptyLines: true,
         })
           .data.filter(
             (row) => row.length === 2 && row[0]?.trim() && row[1]?.trim()
-          ) // Validate rows
-          .map(([english, spanish]) => ({ english, spanish })); // Map to objects
+          )
+          .map(([english, spanish]) => ({ english, spanish }));
 
         if (parsedWords.length < 10) {
           throw new Error(
@@ -50,7 +47,6 @@ const Learn = () => {
           );
         }
 
-        // Select 10 random words
         const selectedWords = parsedWords
           .sort(() => Math.random() - 0.5)
           .slice(0, 10);
@@ -67,7 +63,6 @@ const Learn = () => {
     loadWords();
   }, []);
 
-  // Handle saving a word to Firebase
   const handleSaveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user) {
@@ -83,7 +78,7 @@ const Learn = () => {
         timestamp: Date.now(),
       };
       const newWordRef = await push(dictionaryRef, newEntry);
-      // Update local state to show word is saved
+
       setWords((prev) =>
         prev.map((w, i) =>
           i === index ? { ...w, saved: true, id: newWordRef.key } : w
@@ -95,7 +90,6 @@ const Learn = () => {
     }
   };
 
-  // Handle removing a word from Firebase
   const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user || !word.id) {
@@ -106,7 +100,7 @@ const Learn = () => {
     try {
       const wordRef = ref(database, `users/${user.uid}/dictionary/${word.id}`);
       await remove(wordRef);
-      // Update local state to show word is no longer saved
+
       setWords((prev) =>
         prev.map((w, i) =>
           i === index ? { ...w, saved: false, id: undefined } : w

@@ -12,8 +12,8 @@ import { DictionaryEntry } from "@/lib/types/DictionaryEntry";
 
 interface DictionaryTableProps {
   entries: DictionaryEntry[];
-  onSaveWord?: (word: DictionaryEntry, index: number) => void; // For Learn page
-  onRemoveWord?: (word: DictionaryEntry, index: number) => void; // For Dictionary page
+  onSaveWord?: (word: DictionaryEntry, index: number) => void;
+  onRemoveWord?: (word: DictionaryEntry, index: number) => void;
 }
 
 const DictionaryTable = ({
@@ -21,18 +21,15 @@ const DictionaryTable = ({
   onSaveWord,
   onRemoveWord,
 }: DictionaryTableProps) => {
-  // Text-to-speech function
   const speakWord = (text: string, lang: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang; // Set language (e.g., en-US for English, es-ES for Spanish)
+    utterance.lang = lang;
 
-    // Select a specific voice for the language
     const voices = window.speechSynthesis.getVoices();
-    const selectedVoice = voices.find(
-      (voice) =>
-        lang === "es-ES"
-          ? voice.lang === "es-ES" || voice.lang.startsWith("es") // Match Spanish voices
-          : voice.lang === "en-US" || voice.lang.startsWith("en") // Match English voices
+    const selectedVoice = voices.find((voice) =>
+      lang === "es-ES"
+        ? voice.lang === "es-ES" || voice.lang.startsWith("es")
+        : voice.lang === "en-US" || voice.lang.startsWith("en")
     );
 
     if (selectedVoice) {
@@ -41,12 +38,9 @@ const DictionaryTable = ({
       console.warn(`No suitable voice found for language: ${lang}`);
     }
 
-    // Adjust pitch, rate, and volume for better pronunciation
-    utterance.rate = 0.9; // Slightly slower for better clarity
-    utterance.pitch = 1; // Normal pitch
-    utterance.volume = 1; // Full volume
-
-    // Speak the text
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
     window.speechSynthesis.speak(utterance);
   };
 

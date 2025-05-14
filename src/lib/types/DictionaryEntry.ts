@@ -1,6 +1,5 @@
-// filepath: c:\Krupa - praktykant\Idiomastery\src\types\DictionaryEntry.ts
 export type DictionaryEntry = {
-  id?: string | null; // Allow null for id
+  id?: string | null;
   english: string;
   spanish: string;
   saved?: boolean;

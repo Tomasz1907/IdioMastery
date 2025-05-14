@@ -9,7 +9,7 @@ import { auth, database } from "@/../FirebaseConfig";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DictionaryTable from "../DictionaryTable";
-import { DictionaryEntry } from "@/lib/types/DictionaryEntry"; // Import shared type
+import { DictionaryEntry } from "@/lib/types/DictionaryEntry";
 
 const Dictionary = () => {
   const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
@@ -38,11 +38,10 @@ const Dictionary = () => {
                     id,
                     english: val.english || "N/A",
                     spanish: val.spanish || "N/A",
-                    saved: true, // All Firebase entries are saved
+                    saved: true,
                     timestamp: val.timestamp ?? 0,
                   });
                 });
-                // Sort by timestamp (newest first)
                 dictionaryData.sort(
                   (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)
                 );
@@ -68,7 +67,6 @@ const Dictionary = () => {
     initializeAuth();
   }, []);
 
-  // Handle removing a word from Firebase
   const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user || !word.id) {
@@ -79,7 +77,6 @@ const Dictionary = () => {
     try {
       const wordRef = ref(database, `users/${user.uid}/dictionary/${word.id}`);
       await remove(wordRef);
-      // Update local state to remove word
       setDictionary((prev) => prev.filter((_, i) => i !== index));
     } catch (err) {
       console.error("Error removing word:", err);
