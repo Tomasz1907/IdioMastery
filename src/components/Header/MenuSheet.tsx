@@ -34,9 +34,11 @@ const MenuSheet = () => {
         <SheetHeader>
           <SheetTitle className="border-b pb-2 text-center flex gap-2 text-lg">
             <UserIcon className="text-white rounded-full w-[50px] h-[50px] p-1" />
-            <div className="flex flex-col items-center justify-center w-full text-white">
-              <p>Welcome!</p>
-              {`${auth.currentUser?.email}`}
+            <div className="flex items-center justify-center w-full min-w-0 max-w-full text-white break-words whitespace-normal font-serif text-base">
+              <p className="break-all">
+                Welcome,{" "}
+                {`${auth.currentUser?.displayName || auth.currentUser?.email}`}
+              </p>
             </div>
           </SheetTitle>
           <SheetDescription />
