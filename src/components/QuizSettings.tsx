@@ -47,7 +47,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
           <div>
             <label
               htmlFor="numQuestions"
-              className="block mb-2 text-lg font-medium text-[var(--color-foreground)]"
+              className="block mb-2 text-lg font-medium "
             >
               Number of Questions
             </label>
@@ -59,13 +59,10 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
               }
               disabled={loading}
             >
-              <SelectTrigger
-                id="numQuestions"
-                className="w-full bg-[var(--color-input)] text-[var(--color-foreground)] border-[var(--color-border)] rounded-[var(--radius-md)] focus:ring-[var(--color-ring)] focus:ring-2 transition-[var(--transition-theme)] hover:bg-[var(--color-muted)]"
-              >
+              <SelectTrigger id="numQuestions" className="w-full">
                 <SelectValue placeholder="Choose Number" />
               </SelectTrigger>
-              <SelectContent className="bg-[var(--color-card)] text-[var(--color-card-foreground)] border-[var(--color-border)] rounded-[var(--radius-md)] transition-[var(--transition-theme)]">
+              <SelectContent>
                 {questionOptions
                   .filter((num) => num <= entries.length)
                   .map((num) => (
@@ -79,20 +76,14 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
           </div>
           {numQuestions && (
             <div>
-              <label
-                htmlFor="mode"
-                className="block mb-2 text-lg font-medium text-[var(--color-foreground)]"
-              >
+              <label htmlFor="mode" className="block mb-2 text-lg font-medium">
                 Translation Mode
               </label>
               <Select onValueChange={handleModeChange} disabled={loading}>
-                <SelectTrigger
-                  id="mode"
-                  className="w-full bg-[var(--color-input)] text-[var(--color-foreground)] border-[var(--color-border)] rounded-[var(--radius-md)] focus:ring-[var(--color-ring)] focus:ring-2 transition-[var(--transition-theme)] hover:bg-[var(--color-muted)]"
-                >
+                <SelectTrigger id="mode" className="w-full">
                   <SelectValue placeholder="Choose Mode" />
                 </SelectTrigger>
-                <SelectContent className="bg-[var(--color-card)] text-[var(--color-card-foreground)] border-[var(--color-border)] rounded-[var(--radius-md)] transition-[var(--transition-theme)]">
+                <SelectContent>
                   <SelectItem value="spanish-english">
                     Spanish to English
                   </SelectItem>

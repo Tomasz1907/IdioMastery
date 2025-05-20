@@ -105,10 +105,10 @@ const StatsCards = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
-      <Card className="bg-[var(--color-card)] text-[var(--color-card-foreground)] shadow-lg rounded-[var(--radius-lg)]">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--color-foreground)]">
-            Total Words Learned
+          <CardTitle className="text-lg font-semibold">
+            Total Sentences Learned
           </CardTitle>
         </CardHeader>
         <CardContent className="flex items-center gap-2">
@@ -122,9 +122,9 @@ const StatsCards = () => {
           )}
         </CardContent>
       </Card>
-      <Card className="bg-[var(--color-card)] text-[var(--color-card-foreground)] shadow-lg rounded-[var(--radius-lg)]">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--color-foreground)]">
+          <CardTitle className="text-lg font-semibold">
             Learning Streak
           </CardTitle>
         </CardHeader>
@@ -136,7 +136,7 @@ const StatsCards = () => {
               <span className="text-2xl font-semibold">
                 {learningStreak ?? 0} Days
               </span>
-              <p className="text-sm text-[var(--color-muted-foreground)]">
+              <p className="text-sm text-muted-foreground">
                 {learningStreak && learningStreak > 0
                   ? "Keep it up!"
                   : "Start learning!"}
@@ -145,23 +145,21 @@ const StatsCards = () => {
           )}
         </CardContent>
       </Card>
-      <Card className="bg-[var(--color-card)] text-[var(--color-card-foreground)] shadow-lg rounded-[var(--radius-lg)]">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--color-foreground)]">
+          <CardTitle className="text-lg font-semibold">
             Quiz Performance
           </CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="h-8 w-20 bg-[var(--color-muted)] animate-pulse rounded-[var(--radius-sm)]" />
+            <div className="h-8 w-24 bg-[var(--color-muted)] animate-pulse rounded-[var(--radius-sm)]" />
           ) : (
             <>
               <span className="text-2xl font-semibold">
                 {quizPerformance ?? 0}%
               </span>
-              <p className="text-sm text-[var(--color-muted-foreground)]">
-                Average score
-              </p>
+              <p className="text-sm text-muted-foreground">Average score</p>
             </>
           )}
         </CardContent>

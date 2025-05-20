@@ -100,7 +100,7 @@ const Dictionary = () => {
       <Card className="w-full max-w-4xl">
         <CardHeader>
           <CardTitle className="text-3xl font-bold font-serif">
-            Your Saved Words
+            Your Saved Vocabulary
           </CardTitle>
         </CardHeader>
         <CardContent>

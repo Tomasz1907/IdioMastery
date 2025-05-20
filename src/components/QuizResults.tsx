@@ -25,7 +25,7 @@ const QuizResults: React.FC<QuizResultsProps> = ({
           Score: {score}/{questions.length} (
           {((score / questions.length) * 100).toFixed(2)}%)
         </p>
-        <p className="text-lg text-[var(--color-muted-foreground)] mt-1">
+        <p className="text-lg text-muted-foreground mt-1">
           Time Taken:{" "}
           {startTime && endTime
             ? (() => {
@@ -55,13 +55,13 @@ const QuizResults: React.FC<QuizResultsProps> = ({
               {q.options.map((option: string, i: number) => (
                 <li
                   key={i}
-                  className={`p-2 rounded-[var(--radius-sm)] ${
+                  className={`p-2 rounded-sm ${
                     option === q.correctTranslation
                       ? "bg-green-600 text-white"
                       : option === q.userAnswer
                       ? "bg-red-700 text-white"
-                      : "bg-[var(--color-muted)] text-[var(--color-muted-foreground)]"
-                  } transition-[var(--transition-theme)]`}
+                      : "bg-muted text-muted-foreground"
+                  }`}
                 >
                   {String.fromCharCode(97 + i)}. {option}
                 </li>

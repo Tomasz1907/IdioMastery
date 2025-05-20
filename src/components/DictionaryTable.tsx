@@ -105,7 +105,7 @@ const DictionaryTable = ({
               {/* Table view for larger screens */}
               <div className="rounded-xl hidden md:block font-serif">
                 <div className="bg-red-700 rounded-t-lg flex items-center justify-between p-4">
-                  <h3 className="text-white text-base">Word {index + 1}</h3>
+                  <h3 className="text-white text-base">Sentence {index + 1}</h3>
                   <StarIcon
                     onClick={() =>
                       entry.saved
@@ -186,7 +186,7 @@ const DictionaryTable = ({
           ))}
         </div>
       ) : (
-        <p className="text-center text-sm sm:text-xs">No words found.</p>
+        <p className="text-center text-sm sm:text-xs">No sentences found.</p>
       )}
     </>
   );

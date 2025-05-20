@@ -32,15 +32,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   };
 
   return (
-    <Avatar
-      className={cn(
-        sizeClasses[size],
-        "bg-[var(--color-card)] transition-[var(--transition-theme)]",
-        className
-      )}
-    >
+    <Avatar className={cn(sizeClasses[size], "bg-card", className)}>
       <AvatarImage src={user?.photoURL || undefined} alt="User avatar" />
-      <AvatarFallback className="font-semibold text-[var(--color-card-foreground)]">
+      <AvatarFallback className="font-semibold text-card-foreground">
         {getInitials()}
       </AvatarFallback>
     </Avatar>

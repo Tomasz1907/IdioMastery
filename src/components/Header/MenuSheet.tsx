@@ -30,7 +30,7 @@ const MenuSheet = () => {
           <MenuIcon />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-5 bg-neutral-800/50 text-white backdrop-blur-xl">
+      <SheetContent className="p-5 bg-neutral-700/80 text-white backdrop-blur-xl">
         <SheetHeader>
           <SheetTitle className="border-b pb-2 text-center flex gap-2 text-lg">
             <UserIcon className="text-white rounded-full w-[50px] h-[50px] p-1" />
@@ -44,6 +44,14 @@ const MenuSheet = () => {
 
         {/* Navigation Links */}
         <SheetClose asChild>
+          <Link to={`/${userUID}/learn`}>
+            <Button variant="ghost" className="text-lg">
+              <GraduationCapIcon />
+              Learn
+            </Button>
+          </Link>
+        </SheetClose>
+        <SheetClose asChild>
           <Link to={`/${userUID}/dictionary`}>
             <Button variant="ghost" className="text-lg">
               <BookIcon />
@@ -56,14 +64,6 @@ const MenuSheet = () => {
             <Button variant="ghost" className="text-lg">
               <ShieldQuestionIcon />
               Quiz
-            </Button>
-          </Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link to={`/${userUID}/learn`}>
-            <Button variant="ghost" className="text-lg">
-              <GraduationCapIcon />
-              Learn
             </Button>
           </Link>
         </SheetClose>

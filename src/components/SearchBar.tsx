@@ -23,7 +23,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
         placeholder="Search by word..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        className="w-full pr-10 focus:ring-2 focus:ring-[#b41212] border-neutral-300 bg-[var(--color-input)] text-[var(--color-foreground)] rounded-[var(--radius-md)]"
+        className="w-full focus-visible:ring-0 pr-10 border-neutral-300"
       />
       <SearchIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-500" />
     </div>

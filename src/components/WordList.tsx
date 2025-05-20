@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import DictionaryTable from "@/components/DictionaryTable";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -25,7 +24,7 @@ const WordList: React.FC<WordListProps> = ({
           onRemoveWord={onRemoveWord}
         />
       ) : (
-        !loading && <p>No saved words found.</p>
+        !loading && <p>No saved sentences found.</p>
       )}
     </>
   );

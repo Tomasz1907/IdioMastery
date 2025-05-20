@@ -26,7 +26,7 @@ const Dashboard = () => {
           asChild
           className="h-20 text-lg bg-red-700 hover:bg-red-900 text-white"
         >
-          <Link to={`/${userUID}/learn`}>Learn New Words</Link>
+          <Link to={`/${userUID}/learn`}>Learn New Sentences</Link>
         </Button>
         <Button
           asChild

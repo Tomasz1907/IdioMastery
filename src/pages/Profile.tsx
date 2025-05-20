@@ -2,12 +2,10 @@ import { useState } from "react";
 import { auth } from "@/../FirebaseConfig";
 import { signOut, updateProfile } from "firebase/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DeleteAccountModal from "@/components/DeleteAccountModal";
 import UserAvatar from "@/components/UserAvatar";
-import ThemeToggle from "@/components/Header/ThemeToggle";
 
 const Profile = () => {
   const user = auth.currentUser;
@@ -15,17 +13,6 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [error, setError] = useState("");
-
-  // Compute initials for AvatarFallback
-  const getInitials = () => {
-    if (user?.displayName) {
-      const names = user.displayName.split(" ");
-      return names.length > 1
-        ? `${names[0][0]}${names[1][0]}`.toUpperCase()
-        : user.displayName[0].toUpperCase();
-    }
-    return user?.email?.[0]?.toUpperCase() || "?";
-  };
 
   const handleUpdateProfile = async () => {
     if (!user) {

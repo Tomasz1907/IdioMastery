@@ -122,9 +122,9 @@ const Learn = () => {
         <CardHeader>
           <CardTitle className="text-3xl font-bold font-serif">
             <div className="flex justify-between">
-              <p>Learn New Words</p>
+              <p>Learn New Sentences</p>
               <div className="hidden md:flex text-sm gap-2 items-end justify-center mr-5">
-                <p>Click star and save to dictionary</p>
+                <p>Click and save to dictionary</p>
                 <CornerRightDownIcon className="size-4" />
               </div>
             </div>
