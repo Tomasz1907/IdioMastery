@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { auth } from "@/../FirebaseConfig";
 import { Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import UserAvatar from "../UserAvatar";
 
 const Menu = () => {
   const user = auth.currentUser;
@@ -25,20 +26,11 @@ const Menu = () => {
           </Button>
         </Link>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-5">
         <ThemeToggle />
-        <Link to={`/${userUID}/profile`}>
-          <Button variant="ghost" className="text-lg">
-            Profile
-          </Button>
+        <Link to={`/${userUID}/profile`} className="flex items-center gap-4">
+          <UserAvatar size="sm" className="drop-shadow-sm" />
         </Link>
-        <Button
-          variant="ghost"
-          className="text-lg"
-          onClick={() => auth.signOut()}
-        >
-          Sign out
-        </Button>
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
-import SignInPage from "./auth/sign-in";
-import SignUpPage from "./auth/sign-up";
-import Dashboard from "./user/Dashboard";
-import Profile from "./user/Profile";
-import Dictionary from "./components/Dictionary/Dictionary";
-import Quiz from "./components/Quiz/Quiz";
-import Learn from "./components/Learn/Learn";
+import SignInPage from "./auth/SignIn/SignInPage";
+import SignUpPage from "./auth/SignUp/SignUpPage";
+import Dashboard from "./pages/Dashboard";
+import Dictionary from "./pages/Dictionary";
+import Quiz from "./pages/Quiz";
+import Learn from "./pages/Learn";
+import Profile from "./pages/Profile";
 import NotFound from "./not-found";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -36,7 +36,7 @@ const App = () => {
   }
 
   return (
-    <div className="w-full min-h-screen min-w-[350px] flex flex-col justify-between bg-neutral-900/10">
+    <div className="w-full min-h-screen min-w-[350px] flex flex-col justify-between">
       <Header user={user} />
       <div className="flex-1 h-full p-5 md:px-16 text-lg">
         <Routes>

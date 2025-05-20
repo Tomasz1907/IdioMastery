@@ -1,18 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/../FirebaseConfig";
-
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
-import { parseFirebaseError } from "@/lib/firebaseErrorParser"; // Import parser
+import { parseFirebaseError } from "@/lib/firebaseErrorParser";
 
-const SignInPage = () => {
+const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,10 +30,8 @@ const SignInPage = () => {
   const debouncedEmail = useDebounce(email, 500);
   const debouncedPassword = useDebounce(password, 500);
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validateInputs = useCallback(
     (emailVal: string, passwordVal: string) => {
@@ -63,16 +62,12 @@ const SignInPage = () => {
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    if (!hasInteractedWithEmail && value) {
-      setHasInteractedWithEmail(true);
-    }
+    if (!hasInteractedWithEmail && value) setHasInteractedWithEmail(true);
   };
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    if (!hasInteractedWithPassword && value) {
-      setHasInteractedWithPassword(true);
-    }
+    if (!hasInteractedWithPassword && value) setHasInteractedWithPassword(true);
   };
 
   const signIn = async () => {
@@ -149,15 +144,17 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center my-10 gap-10 font-semibold ">
-      <div className="flex flex-col gap-5 items-center justify-center py-10 bg-neutral-500/10 rounded-xl w-full max-w-[400px] drop-shadow-xl">
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl">Sign In</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <Button
-          variant="ghost"
-          className="flex gap-2 ring-1"
+          variant="outline"
+          className="flex gap-2"
           onClick={signInWithGoogle}
           disabled={loading}
         >
-          {/* Google Icon */}
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
@@ -178,64 +175,47 @@ const SignInPage = () => {
           </svg>
           Sign In with Google
         </Button>
-        <h1 className="text-2xl font-bold">Sign In</h1>
-        <div className="w-full px-4">
-          <input
-            className="bg-white text-black p-2 rounded w-full"
-            type="text"
-            placeholder="Email"
-            autoCapitalize="none"
-            value={email}
-            onChange={(event) => handleEmailChange(event.target.value)}
-          />
-          {emailError && (
-            <p className="text-red-600 text-xs mt-1">{emailError}</p>
-          )}
-        </div>
-        <div className="w-full px-4">
-          <input
-            className="bg-white text-black p-2 rounded w-full"
-            type="password"
-            placeholder="Password"
-            autoCapitalize="none"
-            value={password}
-            onChange={(event) => handlePasswordChange(event.target.value)}
-          />
-          {passwordError && (
-            <p className="text-red-600 text-xs mt-1">{passwordError}</p>
-          )}
-        </div>
-        {loading ? (
-          <Button disabled>Loading...</Button>
-        ) : (
-          <Button onClick={() => signIn()}>Sign In</Button>
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => handleEmailChange(e.target.value)}
+          className="focus:ring-2 focus:ring-[#b41212]"
+        />
+        {emailError && <p className="text-red-500 text-xs">{emailError}</p>}
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => handlePasswordChange(e.target.value)}
+          className="focus:ring-2 focus:ring-[#b41212]"
+        />
+        {passwordError && (
+          <p className="text-red-500 text-xs">{passwordError}</p>
         )}
-        <p className="text-sm">
-          <button
-            onClick={handlePasswordReset}
-            className="text-blue-500 hover:underline"
-            disabled={loading}
-          >
-            I don't remember my password
-          </button>
-        </p>
-        <p className="text-sm">
+        <Button
+          onClick={signIn}
+          disabled={loading}
+          className="bg-[#b41212] hover:bg-[#a01010] text-white"
+        >
+          {loading ? "Loading..." : "Sign In"}
+        </Button>
+        <Button variant="link" onClick={handlePasswordReset} disabled={loading}>
+          I don't remember my password
+        </Button>
+        <p className="text-sm text-center">
           Don't have an account?{" "}
           <Link to="/sign-up" className="text-blue-500 hover:underline">
             Sign Up
           </Link>
         </p>
-        {error && (
-          <p className="text-red-600 text-sm px-4 text-center">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         {resetMessage && (
-          <p className="text-green-600 text-sm px-4 text-center">
-            {resetMessage}
-          </p>
+          <p className="text-green-500 text-sm text-center">{resetMessage}</p>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
-export default SignInPage;
+export default SignInForm;

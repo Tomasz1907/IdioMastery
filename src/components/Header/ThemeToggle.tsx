@@ -6,7 +6,11 @@ const ThemeToggle = () => {
 
   return (
     <Button onClick={toggleTheme} variant="ghost" className="text-xl">
-      {theme === "light" ? <Sun /> : <Moon />}
+      {theme === "light" ? (
+        <Sun className="size-5" />
+      ) : (
+        <Moon className="size-5" />
+      )}
     </Button>
   );
 };

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { auth, database } from "@/../FirebaseConfig";
-import { ref, push, remove } from "firebase/database";
-import DictionaryTable from "../DictionaryTable";
-import Papa from "papaparse";
+import { ref, push, remove, set } from "firebase/database";
 import { DictionaryEntry } from "@/lib/types/DictionaryEntry";
-import { Loader } from "lucide-react";
+import WordList from "@/components/WordList";
+import Papa from "papaparse";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CornerRightDownIcon } from "lucide-react";
+import { toast } from "sonner";
+import { updateStreak } from "@/lib/firebaseUtils";
 
 const Learn = () => {
   const [words, setWords] = useState<DictionaryEntry[]>([]);
@@ -31,7 +34,6 @@ const Learn = () => {
         }
 
         const csvText = await response.text();
-
         const parsedWords = Papa.parse<string[]>(csvText, {
           header: false,
           skipEmptyLines: true,
@@ -50,7 +52,6 @@ const Learn = () => {
         const selectedWords = parsedWords
           .sort(() => Math.random() - 0.5)
           .slice(0, 10);
-
         setWords(selectedWords);
       } catch (err: any) {
         console.error("Error loading words:", err.message);
@@ -77,16 +78,19 @@ const Learn = () => {
         spanish: word.spanish,
         timestamp: Date.now(),
       };
-      const newWordRef = await push(dictionaryRef, newEntry);
-
+      const newWordRef = await push(dictionaryRef);
+      await set(newWordRef, newEntry);
       setWords((prev) =>
         prev.map((w, i) =>
           i === index ? { ...w, saved: true, id: newWordRef.key } : w
         )
       );
+      await updateStreak(user.uid);
+      toast.success("Word saved successfully!");
     } catch (err) {
       console.error("Error saving word:", err);
       setError("Could not save word. Please try again.");
+      toast.error("Failed to save word.");
     }
   };
 
@@ -100,7 +104,6 @@ const Learn = () => {
     try {
       const wordRef = ref(database, `users/${user.uid}/dictionary/${word.id}`);
       await remove(wordRef);
-
       setWords((prev) =>
         prev.map((w, i) =>
           i === index ? { ...w, saved: false, id: undefined } : w
@@ -109,26 +112,34 @@ const Learn = () => {
     } catch (err) {
       console.error("Error removing word:", err);
       setError("Could not remove word. Please try again.");
+      toast.error("Failed to remove word.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center ">
-      {loading && <Loader className="animate-spin my-5" />}
-      {error && <p className="mt-4 text-red-500 text-sm sm:text-xs">{error}</p>}
-      {words.length > 0 && (
-        <div className="mt-4 w-full max-w-4xl text-center">
-          <h1 className="text-xl mb-4">Your New Words</h1>
-          <DictionaryTable
-            entries={words}
+    <div className="min-h-screen flex flex-col items-center p-6">
+      <Card className="w-full max-w-4xl shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold font-serif">
+            <div className="flex justify-between">
+              <p>Learn New Words</p>
+              <div className="hidden md:flex text-sm gap-2 items-end justify-center mr-5">
+                <p>Click star and save to dictionary</p>
+                <CornerRightDownIcon className="size-4" />
+              </div>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <WordList
+            words={words}
+            error={error}
+            loading={loading}
             onSaveWord={handleSaveWord}
             onRemoveWord={handleRemoveWord}
           />
-          <p className="text-xl mb-4 sm:text-lg">
-            Refresh page to get new words!
-          </p>
-        </div>
-      )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -47,7 +47,10 @@ const DictionaryTable = ({
       {entries.length > 0 ? (
         <div className="w-full max-w-4xl">
           {entries.map((entry, index) => (
-            <div key={entry.id || index} className="mb-6 rounded-lg shadow-sm">
+            <div
+              key={entry.id || index}
+              className="mb-6 rounded-lg shadow-sm font-serif"
+            >
               {/* Card view for small screens */}
               <div className="block md:hidden bg-neutral-300/10 rounded-xl">
                 <div className="bg-red-700 p-4 rounded-t-xl flex items-center justify-between mb-2">
@@ -60,6 +63,7 @@ const DictionaryTable = ({
                         ? onRemoveWord && onRemoveWord(entry, index)
                         : onSaveWord && onSaveWord(entry, index)
                     }
+                    fill={entry.saved ? "currentColor" : "none"}
                     className={`w-6 h-6 cursor-pointer ${
                       entry.saved
                         ? "text-amber-500 hover:text-white"
@@ -99,7 +103,7 @@ const DictionaryTable = ({
               </div>
 
               {/* Table view for larger screens */}
-              <div className="rounded-xl hidden md:block">
+              <div className="rounded-xl hidden md:block font-serif">
                 <div className="bg-red-700 rounded-t-lg flex items-center justify-between p-4">
                   <h3 className="text-white text-base">Word {index + 1}</h3>
                   <StarIcon
@@ -108,6 +112,7 @@ const DictionaryTable = ({
                         ? onRemoveWord && onRemoveWord(entry, index)
                         : onSaveWord && onSaveWord(entry, index)
                     }
+                    fill={entry.saved ? "currentColor" : "none"}
                     className={`w-6 h-6 cursor-pointer ${
                       entry.saved
                         ? "text-amber-500 hover:text-white"

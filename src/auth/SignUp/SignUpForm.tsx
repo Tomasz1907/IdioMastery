@@ -1,16 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "@/../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { parseFirebaseError } from "@/lib/firebaseErrorParser";
 
-const SignUpPage = () => {
+const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,22 +30,16 @@ const SignUpPage = () => {
   const debouncedPassword = useDebounce(password, 500);
   const debouncedConfirmPassword = useDebounce(confirmPassword, 500);
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validatePassword = (password: string) => {
     const errors: string[] = [];
-    if (password.length < 8) {
-      errors.push("Must be at least 8 characters long");
-    }
-    if (!/[A-Z]/.test(password)) {
+    if (password.length < 8) errors.push("Must be at least 8 characters long");
+    if (!/[A-Z]/.test(password))
       errors.push("Must contain at least one uppercase letter");
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
+    if (!/[!@#$%^&*]/.test(password))
       errors.push("Must contain at least one special character");
-    }
     return errors;
   };
 
@@ -91,16 +87,12 @@ const SignUpPage = () => {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    if (!hasInteractedWithPassword && value) {
-      setHasInteractedWithPassword(true);
-    }
+    if (!hasInteractedWithPassword && value) setHasInteractedWithPassword(true);
   };
 
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
-    if (!hasInteractedWithPassword && value) {
-      setHasInteractedWithPassword(true);
-    }
+    if (!hasInteractedWithPassword && value) setHasInteractedWithPassword(true);
   };
 
   const signUp = async () => {
@@ -154,15 +146,17 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center my-10 gap-10">
-      <div className="flex flex-col gap-5 items-center justify-center py-10 bg-neutral-500/10 rounded-xl w-full max-w-[400px] drop-shadow-xl">
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <Button
-          variant="ghost"
-          className="flex gap-2 ring-1"
+          variant="outline"
+          className="flex gap-2"
           onClick={signUpWithGoogle}
           disabled={loading}
         >
-          {/* Google Icon */}
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
@@ -181,69 +175,57 @@ const SignUpPage = () => {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 4.01 3.52 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          Sign up with Google
+          Sign Up with Google
         </Button>
-        <h1 className="text-2xl font-bold">Sign Up</h1>
-        <div className="w-full px-4">
-          <input
-            className="bg-white text-black p-2 rounded w-full"
-            type="text"
-            placeholder="Email"
-            autoCapitalize="none"
-            value={email}
-            onChange={(e) => handleEmailChange(e.target.value)}
-          />
-          {emailError && (
-            <p className="text-red-500 text-xs mt-1">{emailError}</p>
-          )}
-        </div>
-        <div className="w-full px-4">
-          <input
-            className="bg-white text-black p-2 rounded w-full"
-            type="password"
-            placeholder="Password"
-            autoCapitalize="none"
-            value={password}
-            onChange={(e) => handlePasswordChange(e.target.value)}
-          />
-          {passwordErrors.length > 0 && (
-            <div className="text-red-600 text-xs mt-1">
-              {passwordErrors.map((err, index) => (
-                <p key={index}>{err}</p>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="w-full px-4">
-          <input
-            className="bg-white text-black p-2 rounded w-full"
-            type="password"
-            placeholder="Confirm Password"
-            autoCapitalize="none"
-            value={confirmPassword}
-            onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-          />
-          {confirmPasswordError && (
-            <p className="text-red-600 text-xs mt-1">{confirmPasswordError}</p>
-          )}
-        </div>
-        {loading ? (
-          <Button disabled>Loading...</Button>
-        ) : (
-          <Button onClick={signUp}>Sign Up</Button>
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => handleEmailChange(e.target.value)}
+          className="focus:ring-2 focus:ring-[#b41212]"
+        />
+        {emailError && <p className="text-red-500 text-xs">{emailError}</p>}
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => handlePasswordChange(e.target.value)}
+          className="focus:ring-2 focus:ring-[#b41212]"
+        />
+        {passwordErrors.length > 0 && (
+          <div className="text-red-500 text-xs">
+            {passwordErrors.map((err, index) => (
+              <p key={index}>{err}</p>
+            ))}
+          </div>
         )}
-        {error && (
-          <p className="text-red-600 text-sm px-4 text-center">{error}</p>
+        <Input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+          className="focus:ring-2 focus:ring-[#b41212]"
+        />
+        {confirmPasswordError && (
+          <p className="text-red-500 text-xs">{confirmPasswordError}</p>
         )}
-        <p className="text-sm">
+        <Button
+          onClick={signUp}
+          disabled={loading}
+          className="bg-[#b41212] hover:bg-[#a01010] text-white"
+        >
+          {loading ? "Loading..." : "Sign Up"}
+        </Button>
+        <p className="text-sm text-center">
           Already have an account?{" "}
           <Link to="/sign-in" className="text-blue-500 hover:underline">
             Sign In
           </Link>
         </p>
-      </div>
-    </div>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      </CardContent>
+    </Card>
   );
 };
 
-export default SignUpPage;
+export default SignUpForm;
