@@ -26,9 +26,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
 
   // Define size classes
   const sizeClasses = {
-    sm: "w-8 h-8 text-xs",
-    md: "w-16 h-16 text-xl",
-    lg: "w-24 h-24 text-2xl",
+    sm: "w-8 h-8 text-base",
+    md: "w-16 h-16 text-2xl",
+    lg: "w-24 h-24 text-4xl",
   };
 
   return (
