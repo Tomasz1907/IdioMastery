@@ -3,7 +3,6 @@ import Menu from "./Menu";
 import MobileMenu from "./MobileMenu";
 import Logo from "./Logo";
 import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
 import { User } from "firebase/auth";
 
 interface HeaderProps {
@@ -14,7 +13,7 @@ const Header = ({ user }: HeaderProps) => {
   const userUID = user?.uid?.slice(-6);
 
   return (
-    <nav className="h-[60px] w-full flex items-center px-5 bg-red-700 text-white px-12">
+    <nav className="h-[60px] w-full flex items-center px-5 bg-red-700 text-white md:px-12">
       <Link to={user ? `/${userUID}` : "/"}>
         <Logo />
       </Link>
