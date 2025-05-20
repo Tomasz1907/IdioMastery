@@ -15,54 +15,60 @@ const Learn = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadWords = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const csvUrl = "/englishspanish.csv";
-        const response = await fetch(csvUrl, {
-          headers: { Accept: "text/csv; charset=utf-8" },
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            response.status === 404
-              ? "CSV file not found. Please ensure the file exists."
-              : `Failed to load CSV file: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const csvText = await response.text();
-        const parsedWords = Papa.parse<string[]>(csvText, {
-          header: false,
-          skipEmptyLines: true,
-        })
-          .data.filter(
-            (row) => row.length === 2 && row[0]?.trim() && row[1]?.trim()
-          )
-          .map(([english, spanish]) => ({ english, spanish }));
-
-        if (parsedWords.length < 10) {
-          throw new Error(
-            `Not enough valid sentences in CSV. Found ${parsedWords.length}, need at least 10.`
-          );
-        }
-
-        const selectedWords = parsedWords
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 10);
-        setWords(selectedWords);
-      } catch (err: any) {
-        console.error("Error loading sentences:", err.message);
-        setError(`Could not load sentences: ${err.message}.`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadWords();
   }, []);
+
+  const loadWords = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const csvUrl = "/englishspanish.csv";
+      const response = await fetch(csvUrl, {
+        headers: { Accept: "text/csv; charset=utf-8" },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          response.status === 404
+            ? "CSV file not found. Please ensure the file exists."
+            : `Failed to load CSV file: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const csvText = await response.text();
+      const parsedWords = Papa.parse<string[]>(csvText, {
+        header: false,
+        skipEmptyLines: true,
+      })
+        .data.filter(
+          (row) => row.length === 2 && row[0]?.trim() && row[1]?.trim()
+        )
+        .map(([english, spanish]) => ({ english, spanish }));
+
+      if (parsedWords.length < 10) {
+        throw new Error(
+          `Not enough valid sentences in CSV. Found ${parsedWords.length}, need at least 10.`
+        );
+      }
+
+      // Pick 10 random sentences efficiently
+      const indices = new Set<number>();
+      while (indices.size < 10) {
+        indices.add(Math.floor(Math.random() * parsedWords.length));
+      }
+      const selectedWords = Array.from(indices).map(
+        (index) => parsedWords[index]
+      );
+
+      setWords(selectedWords);
+    } catch (err: any) {
+      console.error("Error loading sentences:", err.message);
+      setError(`Could not load sentences: ${err.message}.`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSaveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
@@ -117,7 +123,7 @@ const Learn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6">
+    <div className="min-h-screen flex flex-col items-center p-6 ">
       <Card className="w-full max-w-4xl shadow-lg">
         <CardHeader>
           <CardTitle className="text-3xl font-bold font-serif">
