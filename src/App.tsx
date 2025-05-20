@@ -1,8 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
-import SignInPage from "./auth/SignIn/SignInPage";
-import SignUpPage from "./auth/SignUp/SignUpPage";
 import Dashboard from "./pages/Dashboard";
 import Dictionary from "./pages/Dictionary";
 import Quiz from "./pages/Quiz";
@@ -12,6 +10,8 @@ import NotFound from "./not-found";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Loader } from "lucide-react";
+import SignInPage from "./auth/SignInPage";
+import SignUpPage from "./auth/SignUpPage";
 
 const App = () => {
   const navigate = useNavigate();
@@ -38,16 +38,20 @@ const App = () => {
   return (
     <div className="w-full min-h-screen min-w-[350px] flex flex-col justify-between">
       <Header user={user} />
-      <div className="flex-1 h-full p-5 md:px-16 text-lg">
+      <div className="flex-1 h-full md:px-16 text-lg">
         <Routes>
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
-          <Route path="/:userUID" element={<Dashboard />} />
-          <Route path="/:userUID/profile" element={<Profile />} />
-          <Route path="/:userUID/dictionary" element={<Dictionary />} />
-          <Route path="/:userUID/quiz" element={<Quiz />} />
-          <Route path="/:userUID/learn" element={<Learn />} />
-          <Route path="*" element={<NotFound />} />
+          {user && (
+            <>
+              <Route path="/:userUID" element={<Dashboard />} />
+              <Route path="/:userUID/profile" element={<Profile />} />
+              <Route path="/:userUID/dictionary" element={<Dictionary />} />
+              <Route path="/:userUID/quiz" element={<Quiz />} />
+              <Route path="/:userUID/learn" element={<Learn />} />
+              <Route path="*" element={<NotFound />} />
+            </>
+          )}
         </Routes>
       </div>
       <Footer />

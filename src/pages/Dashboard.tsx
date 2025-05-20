@@ -21,7 +21,7 @@ const Dashboard = () => {
 
       <LearningProgress />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4">
         <Button
           asChild
           className="h-20 text-lg bg-red-700 hover:bg-red-900 text-white"

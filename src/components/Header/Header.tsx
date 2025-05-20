@@ -18,18 +18,10 @@ const Header = ({ user }: HeaderProps) => {
       <Link to={user ? `/${userUID}` : "/"}>
         <Logo />
       </Link>
-      {user ? (
+      {user && (
         <div className="w-full">
           <MobileMenu />
           <Menu />
-        </div>
-      ) : (
-        <div className="flex items-center justify-end w-full">
-          <Link to="/sign-in">
-            <Button variant="ghost" className="text-lg">
-              Sign In
-            </Button>
-          </Link>
         </div>
       )}
     </nav>

@@ -45,7 +45,7 @@ const Learn = () => {
 
         if (parsedWords.length < 10) {
           throw new Error(
-            `Not enough valid words in CSV. Found ${parsedWords.length}, need at least 10.`
+            `Not enough valid sentences in CSV. Found ${parsedWords.length}, need at least 10.`
           );
         }
 
@@ -54,8 +54,8 @@ const Learn = () => {
           .slice(0, 10);
         setWords(selectedWords);
       } catch (err: any) {
-        console.error("Error loading words:", err.message);
-        setError(`Could not load words: ${err.message}.`);
+        console.error("Error loading sentences:", err.message);
+        setError(`Could not load sentences: ${err.message}.`);
       } finally {
         setLoading(false);
       }
@@ -67,7 +67,7 @@ const Learn = () => {
   const handleSaveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user) {
-      setError("Please sign in to save words.");
+      setError("Please sign in to save sentences.");
       return;
     }
 
@@ -86,18 +86,18 @@ const Learn = () => {
         )
       );
       await updateStreak(user.uid);
-      toast.success("Word saved successfully!");
+      toast.success("Sentence saved successfully!");
     } catch (err) {
-      console.error("Error saving word:", err);
-      setError("Could not save word. Please try again.");
-      toast.error("Failed to save word.");
+      console.error("Error saving sentence:", err);
+      setError("Could not save sentence. Please try again.");
+      toast.error("Failed to save sentence.");
     }
   };
 
   const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
     if (!user || !word.id) {
-      setError("Please sign in to remove words.");
+      setError("Please sign in to remove sentences.");
       return;
     }
 
@@ -110,9 +110,9 @@ const Learn = () => {
         )
       );
     } catch (err) {
-      console.error("Error removing word:", err);
-      setError("Could not remove word. Please try again.");
-      toast.error("Failed to remove word.");
+      console.error("Error removing sentence:", err);
+      setError("Could not remove sentence. Please try again.");
+      toast.error("Failed to remove sentence.");
     }
   };
 
