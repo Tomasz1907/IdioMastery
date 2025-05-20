@@ -80,14 +80,13 @@ const Profile = () => {
               <div className="flex flex-col gap-2">
                 <Button
                   onClick={handleUpdateProfile}
-                  className="w-full bg-green-500 hover:bg-green-600"
+                  className="w-full bg-green-600 hover:bg-green-900 text-white"
                 >
                   Save
                 </Button>
                 <Button
-                  variant="destructive"
                   onClick={() => setIsEditing(false)}
-                  className="w-full"
+                  className="bg-red-700 hover:bg-red-900 text-white w-full"
                 >
                   Cancel
                 </Button>
