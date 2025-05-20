@@ -27,7 +27,7 @@ const MenuSheet = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" className="text-xl h-10">
-          <MenuIcon />
+          <MenuIcon className="size-5" />
         </Button>
       </SheetTrigger>
       <SheetContent className="p-5 bg-gray-800/80 text-white backdrop-blur-xl">
