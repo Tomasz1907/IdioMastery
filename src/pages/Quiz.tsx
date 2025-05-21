@@ -179,7 +179,7 @@ const Quiz = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 ">
+    <div className="flex flex-col items-center p-6 ">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-serif">

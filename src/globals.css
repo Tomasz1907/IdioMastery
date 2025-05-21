@@ -2,6 +2,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+.font-serif {
+  font-family: "Noto Serif", serif;
+}
+
 @theme {
   /* Enable dark mode for [data-theme="dark"] */
   --dark-selector: [data-theme= "dark"];
@@ -88,10 +92,6 @@
   --color-sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --color-sidebar-border: oklch(0.929 0.013 255.508);
   --color-sidebar-ring: oklch(0.704 0.04 256.788);
-}
-
-.font-serif {
-  font-family: "Noto Serif", serif;
 }
 
 [data-theme="light"] {
