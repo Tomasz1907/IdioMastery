@@ -13,7 +13,7 @@ const Header = ({ user }: HeaderProps) => {
   const userUID = user?.uid?.slice(-6);
 
   return (
-    <nav className="h-[60px] w-full flex items-center px-5 bg-red-700 text-white md:px-12">
+    <nav className="h-[60px] w-full flex items-center px-5 bg-sky-700 text-white md:px-12">
       <Link to={user ? `/${userUID}` : "/"}>
         <Logo />
       </Link>

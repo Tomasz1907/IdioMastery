@@ -20,54 +20,57 @@ const Dictionary = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            try {
+              const dictionaryRef = ref(
+                database,
+                `users/${user.uid}/dictionary`
+              );
+              const snapshot = await get(dictionaryRef);
+              if (snapshot.exists()) {
+                const dictionaryData: DictionaryEntry[] = [];
+                snapshot.forEach((child) => {
+                  const id = child.key!;
+                  const val = child.val();
+                  dictionaryData.push({
+                    id,
+                    english: val.english || "N/A",
+                    spanish: val.spanish || "N/A",
+                    saved: true,
+                    timestamp: val.timestamp ?? 0,
+                  });
+                });
+                dictionaryData.sort(
+                  (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)
+                );
+                setDictionary(dictionaryData);
+              } else {
+                setError(
+                  "You don't have any saved words. You can save them on the Learn page with the star button."
+                );
+              }
+            } catch (err) {
+              console.error("Error fetching dictionary:", err);
+              setError("Failed to fetch dictionary. Please try again.");
+            }
+          } else {
+            setError("You must be signed in to view your dictionary.");
+          }
+          setLoading(false);
+        });
+      } catch (err) {
+        console.error("Error initializing authentication:", err);
+        setError("An error occurred while restoring your session.");
+        setLoading(false);
+      }
+    };
+
     initializeAuth();
   }, []);
-
-  const initializeAuth = async () => {
-    try {
-      await setPersistence(auth, browserLocalPersistence);
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          try {
-            const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
-            const snapshot = await get(dictionaryRef);
-            if (snapshot.exists()) {
-              const dictionaryData: DictionaryEntry[] = [];
-              snapshot.forEach((child) => {
-                const id = child.key!;
-                const val = child.val();
-                dictionaryData.push({
-                  id,
-                  english: val.english || "N/A",
-                  spanish: val.spanish || "N/A",
-                  saved: true,
-                  timestamp: val.timestamp ?? 0,
-                });
-              });
-              dictionaryData.sort(
-                (a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)
-              );
-              setDictionary(dictionaryData);
-            } else {
-              setError(
-                "You don't have any saved words. You can save them on the Learn page with the star button."
-              );
-            }
-          } catch (err) {
-            console.error("Error fetching dictionary:", err);
-            setError("Failed to fetch dictionary. Please try again.");
-          }
-        } else {
-          setError("You must be signed in to view your dictionary.");
-        }
-        setLoading(false);
-      });
-    } catch (err) {
-      console.error("Error initializing authentication:", err);
-      setError("An error occurred while restoring your session.");
-      setLoading(false);
-    }
-  };
 
   const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;

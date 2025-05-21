@@ -241,7 +241,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
             placeholder="Email"
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            className="focus:ring-2 focus:ring-[#b41212]"
+            className="focus:ring-2 focus:ring-sky-600"
           />
           {emailError && <p className="text-red-500 text-xs">{emailError}</p>}
           <Input
@@ -249,7 +249,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
             placeholder="Password"
             value={password}
             onChange={(e) => handlePasswordChange(e.target.value)}
-            className="focus:ring-2 focus:ring-[#b41212]"
+            className="focus:ring-2 focus:ring-sky-600"
           />
           {passwordErrors.length > 0 && (
             <div className="text-red-500 text-xs">
@@ -265,7 +265,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-                className="focus:ring-2 focus:ring-[#b41212]"
+                className="focus:ring-2 focus:ring-sky-600"
               />
               {confirmPasswordError && (
                 <p className="text-red-500 text-xs">{confirmPasswordError}</p>
@@ -275,7 +275,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
           <Button
             onClick={handleAuth}
             disabled={loading}
-            className="bg-[#b41212] hover:bg-[#a01010] text-white"
+            className="bg-sky-700 hover:bg-sky-800 text-white"
           >
             {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
           </Button>

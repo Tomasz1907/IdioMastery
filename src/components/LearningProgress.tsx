@@ -212,7 +212,7 @@ const LearningProgress = () => {
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="#b41212"
+                stroke="#0084d1"
                 strokeWidth={3}
                 dot={false}
               />

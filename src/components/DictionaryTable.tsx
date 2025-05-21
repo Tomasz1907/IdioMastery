@@ -53,9 +53,9 @@ const DictionaryTable = ({
             >
               {/* Card view for small screens */}
               <div className="block md:hidden bg-neutral-300/10 rounded-xl">
-                <div className="bg-red-700 p-4 rounded-t-xl flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-white">
-                    Word {index + 1}
+                <div className="bg-slate-700 p-4 rounded-t-xl flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-semibold text-amber-400">
+                    Sentence {index + 1}
                   </h3>
                   <StarIcon
                     onClick={() =>
@@ -104,8 +104,10 @@ const DictionaryTable = ({
 
               {/* Table view for larger screens */}
               <div className="rounded-xl hidden md:block font-serif">
-                <div className="bg-red-700 rounded-t-lg flex items-center justify-between p-4">
-                  <h3 className="text-white text-base">Sentence {index + 1}</h3>
+                <div className="bg-slate-700 rounded-t-lg flex items-center justify-between p-4">
+                  <h3 className="text-amber-400 text-base">
+                    Sentence {index + 1}
+                  </h3>
                   <StarIcon
                     onClick={() =>
                       entry.saved
@@ -115,8 +117,8 @@ const DictionaryTable = ({
                     fill={entry.saved ? "currentColor" : "none"}
                     className={`w-6 h-6 cursor-pointer ${
                       entry.saved
-                        ? "text-amber-500 hover:text-white"
-                        : "text-white hover:text-amber-500"
+                        ? "text-amber-400 hover:text-white"
+                        : "text-white hover:text-amber-400"
                     }`}
                     aria-label={
                       entry.saved
@@ -128,10 +130,10 @@ const DictionaryTable = ({
                 <Table className="bg-neutral-300/10 table-auto w-full rounded-lg rounded-t-none">
                   <TableHeader>
                     <TableRow className="border-b-2 border-neutral-300">
-                      <TableHead className="w-1/2 p-2 text-center text-red-700">
+                      <TableHead className="w-1/2 p-2 text-center text-sky-600">
                         English
                       </TableHead>
-                      <TableHead className="w-1/2 p-2 text-center text-red-700">
+                      <TableHead className="w-1/2 p-2 text-center text-sky-600">
                         Spanish
                       </TableHead>
                     </TableRow>

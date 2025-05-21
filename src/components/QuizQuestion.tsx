@@ -17,13 +17,13 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
 }) => {
   return (
     <CardContent className="space-y-6">
-      <div className="text-center">
+      <div className="text-center space-y-6">
         <h2 className="text-2xl font-semibold">
           Question {currentIndex + 1} of {totalQuestions}
         </h2>
         <div className="mt-2 w-full h-3 bg-muted rounded-full shadow-sm">
           <div
-            className="h-full bg-red-700 rounded-full transition-all duration-300"
+            className="h-full bg-green-600 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / totalQuestions) * 100}%` }}
           />
         </div>
