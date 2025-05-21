@@ -57,7 +57,6 @@ const Learn = () => {
         const selectedWords = Array.from(indices).map(
           (index) => parsedWords[index]
         );
-        console.log(selectedWords);
         setWords(selectedWords);
       } catch (err: any) {
         setError(`Could not load sentences: ${err.message}.`);
