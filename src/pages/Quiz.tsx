@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { auth, database } from "@/../FirebaseConfig";
 import { ref, get, set, push } from "firebase/database";
-import QuizSettings from "@/components/QuizSettings";
-import QuizQuestion from "@/components/QuizQuestion";
-import QuizResults from "@/components/QuizResults";
+import QuizSettings from "@/components/Quiz/QuizSettings";
+import QuizQuestion from "@/components/Quiz/QuizQuestion";
+import QuizResults from "@/components/Quiz/QuizResults";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import {
@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { updateStreak } from "@/lib/firebaseUtils";
+import { motion } from "framer-motion";
 
 const Quiz = () => {
   const [numQuestions, setNumQuestions] = useState<number | null>(null);
@@ -179,45 +180,58 @@ const Quiz = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 ">
-      <Card className="w-full max-w-2xl">
+    <div className="flex flex-col items-center p-2 mx-auto">
+      <Card className="w-full max-w-5xl py-12">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold font-serif">
+          <CardTitle
+            style={{ fontFamily: "'Baloo 2', cursive" }}
+            className="text-3xl font-bold font-serif"
+          >
             Translation Quiz
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {loading && <LoadingSpinner />}
-          {error && <ErrorDisplay message={error} />}
-          {!quizStarted && endTime === null && (
-            <QuizSettings
-              entries={entries}
-              numQuestions={numQuestions}
-              mode={mode}
-              loading={loading}
-              setNumQuestions={setNumQuestions}
-              setMode={setMode}
-              onStartQuiz={generateQuestions}
-            />
-          )}
-          {quizStarted && questions.length > 0 && (
-            <QuizQuestion
-              question={questions[currentQuestionIndex]}
-              currentIndex={currentQuestionIndex}
-              totalQuestions={questions.length}
-              onAnswer={handleAnswer}
-            />
-          )}
-          {endTime !== null && questions.length > 0 && (
-            <QuizResults
-              questions={questions}
-              score={score}
-              startTime={startTime}
-              endTime={endTime}
-              onReset={resetQuiz}
-            />
-          )}
-        </CardContent>
+        {loading && <LoadingSpinner />}
+        {!loading && !error && (
+          <motion.div
+            key={entries.map((e) => e.english).join("-")}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <CardContent className="space-y-6 flex items-center justify-center">
+              {error && <ErrorDisplay message={error} />}
+              {!quizStarted && endTime === null && (
+                <QuizSettings
+                  entries={entries}
+                  numQuestions={numQuestions}
+                  mode={mode}
+                  loading={loading}
+                  setNumQuestions={setNumQuestions}
+                  setMode={setMode}
+                  onStartQuiz={generateQuestions}
+                />
+              )}
+              {quizStarted && questions.length > 0 && (
+                <QuizQuestion
+                  question={questions[currentQuestionIndex]}
+                  currentIndex={currentQuestionIndex}
+                  totalQuestions={questions.length}
+                  onAnswer={handleAnswer}
+                />
+              )}
+              {endTime !== null && questions.length > 0 && (
+                <QuizResults
+                  questions={questions}
+                  score={score}
+                  startTime={startTime}
+                  endTime={endTime}
+                  onReset={resetQuiz}
+                />
+              )}
+            </CardContent>
+          </motion.div>
+        )}
       </Card>
     </div>
   );

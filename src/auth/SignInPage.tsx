@@ -2,8 +2,18 @@ import AuthCard from "@/components/AuthCard";
 
 const SignInPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-12 gap-6 md:flex-row md:gap-8">
-      <AuthCard />
+    <div className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
+      <div
+        className="fixed inset-0 bg-cover bg-center blur-xs scale-105 bg-no-repeat brightness-50"
+        style={{
+          backgroundImage: "url('/background.jpg')",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+      />
+      <div className="relative z-10 p-2">
+        <AuthCard />
+      </div>
     </div>
   );
 };

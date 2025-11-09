@@ -6,15 +6,16 @@ import { Link } from "react-router-dom";
 import { User } from "firebase/auth";
 
 interface HeaderProps {
-  user: User | null; // Type the user prop
+  user: User | null;
 }
 
 const Header = ({ user }: HeaderProps) => {
-  const userUID = user?.uid?.slice(-6);
-
   return (
-    <nav className="h-[60px] w-full flex items-center px-5 bg-sky-700 text-white md:px-12">
-      <Link to={user ? `/${userUID}` : "/"}>
+    <nav
+      style={{ fontFamily: "'Baloo 2', cursive" }}
+      className="h-[65px] w-full flex items-center px-5 bg-gray-900 text-white md:px-12"
+    >
+      <Link to={"/"}>
         <Logo />
       </Link>
       {user && (

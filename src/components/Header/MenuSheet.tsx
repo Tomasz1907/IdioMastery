@@ -14,15 +14,14 @@ import {
   BookIcon,
   GraduationCapIcon,
   MenuIcon,
-  ShieldQuestionIcon,
+  TrophyIcon,
   UserIcon,
+  Zap,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const MenuSheet = () => {
-  const user = auth.currentUser;
-  const userUID = user?.uid.slice(-6);
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -30,54 +29,62 @@ const MenuSheet = () => {
           <MenuIcon className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-5 bg-slate-800/80 text-white backdrop-blur-xl">
+      <SheetContent
+        style={{ fontFamily: "'Baloo 2', cursive" }}
+        className="p-5 bg-slate-900 text-white backdrop-blur-xl"
+      >
         <SheetHeader>
-          <SheetTitle className="border-b pb-2 text-center flex gap-2 text-lg">
-            <UserIcon className="text-white rounded-full w-[50px] h-[50px] p-1" />
-            <div className="flex items-center justify-center w-full min-w-0 max-w-full text-white break-words whitespace-normal font-serif text-base">
-              <p className="break-all">
-                Welcome,{" "}
-                {`${auth.currentUser?.displayName || auth.currentUser?.email}`}
-              </p>
+          <SheetTitle className="flex flex-row justify-between border-b pb-2 text-2xl text-white">
+            <p>Menu</p>
+            <div className="md:hidden block">
+              <ThemeToggle />
             </div>
           </SheetTitle>
           <SheetDescription />
         </SheetHeader>
-
-        {/* Navigation Links */}
-        <SheetClose asChild>
-          <Link to={`/${userUID}/learn`}>
-            <Button variant="ghost" className="text-lg">
-              <GraduationCapIcon />
-              Learn
-            </Button>
-          </Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link to={`/${userUID}/dictionary`}>
-            <Button variant="ghost" className="text-lg">
-              <BookIcon />
-              Dictionary
-            </Button>
-          </Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link to={`/${userUID}/quiz`}>
-            <Button variant="ghost" className="text-lg">
-              <ShieldQuestionIcon />
-              Quiz
-            </Button>
-          </Link>
-        </SheetClose>
-        <SheetClose asChild>
-          <Link to={`/${userUID}/profile`}>
-            <Button variant="ghost" className="text-lg">
-              <UserIcon />
-              Profile
-            </Button>
-          </Link>
-        </SheetClose>
-
+        <div className="flex flex-col gap-5 ml-2">
+          {/* Navigation Links */}
+          <SheetClose asChild>
+            <Link to={`/learn`}>
+              <Button variant="ghost" className="text-xl">
+                <GraduationCapIcon className="size-6" />
+                Learn
+              </Button>
+            </Link>
+          </SheetClose>
+          <SheetClose asChild>
+            <Link to={`/dictionary`}>
+              <Button variant="ghost" className="text-xl">
+                <BookIcon className="size-6" />
+                Dictionary
+              </Button>
+            </Link>
+          </SheetClose>
+          <SheetClose asChild>
+            <Link to={`/quiz`}>
+              <Button variant="ghost" className="text-xl">
+                <TrophyIcon className="size-6" />
+                Quiz
+              </Button>
+            </Link>
+          </SheetClose>
+          <SheetClose asChild>
+            <Link to={`/match`}>
+              <Button variant="ghost" className="text-xl">
+                <Zap className="size-6" />
+                Match
+              </Button>
+            </Link>
+          </SheetClose>
+          <SheetClose asChild>
+            <Link to={`/profile`}>
+              <Button variant="ghost" className="text-xl">
+                <UserIcon className="size-6" />
+                Profile
+              </Button>
+            </Link>
+          </SheetClose>
+        </div>
         {/* Logout Button */}
         <SheetFooter>
           <SheetClose asChild>
@@ -85,7 +92,7 @@ const MenuSheet = () => {
               onClick={() => {
                 auth.signOut();
               }}
-              className="text-lg bg-red-700 hover:bg-red-800 text-white"
+              className="text-lg bg-red-900 hover:bg-red-950 text-white"
             >
               Logout
             </Button>

@@ -1,11 +1,11 @@
 import { auth } from "@/../FirebaseConfig";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils"; // Assuming you have a utility for className merging
+import { cn } from "@/lib/utils";
 
 interface UserAvatarProps {
-  user?: typeof auth.currentUser; // Firebase user type
-  className?: string; // For custom styling
-  size?: "sm" | "md" | "lg"; // Control avatar size
+  user?: typeof auth.currentUser;
+  className?: string;
+  size?: "sm" | "md" | "lg";
 }
 
 const UserAvatar: React.FC<UserAvatarProps> = ({
@@ -13,7 +13,6 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   className,
   size = "md",
 }) => {
-  // Compute initials for AvatarFallback
   const getInitials = () => {
     if (user?.displayName) {
       const names = user.displayName.split(" ");
@@ -24,17 +23,23 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
     return user?.email?.[0]?.toUpperCase() || "?";
   };
 
-  // Define size classes
   const sizeClasses = {
-    sm: "w-8 h-8 text-base",
-    md: "w-16 h-16 text-2xl",
+    sm: "w-9 h-9 text-lg ring-3 ring-white hover:ring-[#F6BE2C]",
+    md: "w-16 h-16 text-2xl ring-2 ring-white",
     lg: "w-24 h-24 text-4xl",
   };
 
   return (
-    <Avatar className={cn(sizeClasses[size], "bg-card", className)}>
-      <AvatarImage src={user?.photoURL || undefined} alt="User avatar" />
-      <AvatarFallback className="font-semibold text-card-foreground">
+    <Avatar className={cn(sizeClasses[size], className, "overflow-hidden")}>
+      <div className="">
+        <AvatarImage
+          src={user?.photoURL || undefined}
+          alt="User avatar"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      </div>
+
+      <AvatarFallback className="bg-gray-800 text-white font-semibold">
         {getInitials()}
       </AvatarFallback>
     </Avatar>

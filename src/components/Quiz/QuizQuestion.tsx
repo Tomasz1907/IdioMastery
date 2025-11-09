@@ -37,7 +37,7 @@ const QuizQuestion: React.FC<QuizQuestionProps> = ({
             key={index}
             onClick={() => onAnswer(option)}
             variant="default"
-            className="flex justify-between py-8 text-left w-full text-base font-serif break-words whitespace-normal"
+            className="h-full flex justify-between py-4 text-left w-full text-base font-serif break-words whitespace-normal"
             aria-label={`Option ${String.fromCharCode(97 + index)}: ${option}`}
           >
             <span className="font-semibold mr-2">

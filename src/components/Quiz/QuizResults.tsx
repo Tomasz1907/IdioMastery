@@ -46,10 +46,10 @@ const QuizResults: React.FC<QuizResultsProps> = ({
       <div className=" overflow-y-auto space-y-4 pr-2">
         <h3 className="text-lg font-semibold ">Review Questions:</h3>
         {questions.map((q, index) => (
-          <div key={index} className="p-4 border">
+          <div key={index} className="">
             <p className="text-lg  mb-2">
-              <strong>Question {index + 1}:</strong> Translate{" "}
-              <strong>{q.word}</strong> ({q.sourceLang} to {q.targetLang})
+              <strong>Question {index + 1}: </strong>
+              <strong>{q.word}</strong>
             </p>
             <ul className="space-y-2">
               {q.options.map((option: string, i: number) => (

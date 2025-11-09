@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header/Header";
 import Dashboard from "./pages/Dashboard";
@@ -9,52 +9,70 @@ import Profile from "./pages/Profile";
 import NotFound from "./not-found";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Loader } from "lucide-react";
 import SignInPage from "./auth/SignInPage";
 import SignUpPage from "./auth/SignUpPage";
+import Match from "./pages/Match";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    const userUID = user?.uid?.slice(-6);
     if (!user && !loading && window.location.pathname !== "/sign-up") {
       navigate("/sign-in");
     }
     if (user && window.location.pathname === "/") {
-      navigate(`/${userUID}`);
+      navigate(`/`);
     }
   }, [user, loading, navigate]);
 
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-neutral-800 text-white">
-        <Loader className="animate-spin size-16" />
+        <LoadingSpinner />
       </div>
     );
   }
 
+  const authRoutes = ["/sign-in", "/sign-up"];
+  const isAuthPage = authRoutes.includes(location.pathname);
+
   return (
-    <div className="w-full min-h-screen min-w-[350px] flex flex-col justify-between">
-      <Header user={user} />
-      <div className="flex-1 h-full md:px-16 text-lg">
+    <div className="flex flex-col min-h-screen min-w-[300px]">
+      {/* Header */}
+      {!isAuthPage && (
+        <header className="sticky top-0 z-50">
+          <Header user={user} />
+        </header>
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 py-6">
         <Routes>
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           {user && (
             <>
-              <Route path="/:userUID" element={<Dashboard />} />
-              <Route path="/:userUID/profile" element={<Profile />} />
-              <Route path="/:userUID/dictionary" element={<Dictionary />} />
-              <Route path="/:userUID/quiz" element={<Quiz />} />
-              <Route path="/:userUID/learn" element={<Learn />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="/dictionary" element={<Dictionary />} />
+              <Route path="/quiz" element={<Quiz />} />
+              <Route path="/match" element={<Match />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </>
           )}
         </Routes>
-      </div>
-      <Footer />
+      </main>
+
+      {/* Footer */}
+      {!isAuthPage && (
+        <footer className="mt-auto">
+          <Footer />
+        </footer>
+      )}
     </div>
   );
 };

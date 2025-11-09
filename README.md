@@ -1,58 +1,47 @@
-# Englishspanish.csv
+# IdioMastery - Spanish-English Learning App
+
+A **fun, interactive, and gamified** language learning app to master Spanish vocabulary through flashcards, quizzes, and matching games.
+
+---
+
+## Features
+
+- **Dashboard**: Check your progress, stay motivated
+- **Learn**: Save new words with a star
+- **Dictionary**: Review all saved words
+- **Quiz**: Test your knowledge with multiple-choice
+- **Match**: Fast-paced matching game with timer
+- **Profile**: Change your avatar or name, you can delete the account
+
+---
+
+## Tech Stack
+
+- **Frontend**: React, TypeScript, Tailwind CSS, Shadcn, Framer Motion
+- **Backend**: Firebase (Auth, Realtime Database)
+- **UI**: ShadCN UI, Lucide Icons
+- **CSV**: `englishspanish.csv` for 1000+ word pairs
+
+---
+
+# Dataset - Englishspanish.csv
 
 Dataset from https://www.kaggle.com/datasets/lonnieqin/englishspanish-translation-dataset/data by Lonnie
 
-# React + TypeScript + Vite
+# Auth page background
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Background picture from https://cdn.pixabay.com/photo/2017/12/30/16/52/mountain-3050474_1280.jpg by Monigocan
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://idiomastery.web.app/](https://idiomastery.web.app/)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Screenshots
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+| Learn                                    | Quiz                                   | Match                                    |
+| ---------------------------------------- | -------------------------------------- | ---------------------------------------- |
+| ![Learn](./public/screenshots/Learn.jpg) | ![Quiz](./public/screenshots/Quiz.jpg) | ![Match](./public/screenshots/Match.jpg) |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
+---

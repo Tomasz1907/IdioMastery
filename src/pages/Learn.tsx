@@ -2,39 +2,42 @@ import { useState, useEffect } from "react";
 import { auth, database } from "@/../FirebaseConfig";
 import { ref, push, remove, set } from "firebase/database";
 import { DictionaryEntry } from "@/lib/types/DictionaryEntry";
-import WordList from "@/components/WordList";
+import WordList from "@/components/LearnDictionary/WordList";
 import Papa from "papaparse";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CornerRightDownIcon } from "lucide-react";
+import { CornerRightDownIcon, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { updateStreak } from "@/lib/firebaseUtils";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Learn = () => {
   const [words, setWords] = useState<DictionaryEntry[]>([]);
+  const [allCsvWords, setAllCsvWords] = useState<DictionaryEntry[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
 
+  // Load CSV once
   useEffect(() => {
-    const loadWords = async () => {
+    const loadCsv = async () => {
       setLoading(true);
       setError("");
-
       try {
         const csvUrl = "/englishspanish.csv";
         const response = await fetch(csvUrl, {
           headers: { Accept: "text/csv; charset=utf-8" },
         });
-
         if (!response.ok) {
           throw new Error(
             response.status === 404
-              ? "CSV file not found. Please ensure the file exists."
-              : `Failed to load CSV file: ${response.status} ${response.statusText}`
+              ? "CSV file not found."
+              : `Failed to load CSV: ${response.status}`
           );
         }
-
         const csvText = await response.text();
-        const parsedWords = Papa.parse<string[]>(csvText, {
+        const parsed = Papa.parse<string[]>(csvText, {
           header: false,
           skipEmptyLines: true,
         })
@@ -43,30 +46,47 @@ const Learn = () => {
           )
           .map(([english, spanish]) => ({ english, spanish }));
 
-        if (parsedWords.length < 10) {
+        if (parsed.length < 3) {
           throw new Error(
-            `Not enough valid sentences in CSV. Found ${parsedWords.length}, need at least 10.`
+            `Only ${parsed.length} valid sentences found. Need at least 3.`
           );
         }
 
-        // Pick 10 random sentences efficiently
-        const indices = new Set<number>();
-        while (indices.size < 10) {
-          indices.add(Math.floor(Math.random() * parsedWords.length));
-        }
-        const selectedWords = Array.from(indices).map(
-          (index) => parsedWords[index]
-        );
-        setWords(selectedWords);
+        setAllCsvWords(parsed);
+        loadRandomWords(parsed);
       } catch (err: any) {
-        setError(`Could not load sentences: ${err.message}.`);
+        setError(`Could not load sentences: ${err.message}`);
       } finally {
         setLoading(false);
       }
     };
-
-    loadWords();
+    loadCsv();
   }, []);
+
+  // Pick 3 random words
+  const loadRandomWords = (source: DictionaryEntry[]) => {
+    const indices = new Set<number>();
+    while (indices.size < 3 && indices.size < source.length) {
+      indices.add(Math.floor(Math.random() * source.length));
+    }
+    const selected = Array.from(indices).map((i) => ({
+      ...source[i],
+      saved: false,
+      id: undefined,
+    }));
+    setWords(selected);
+  };
+
+  // Animated reload
+  const handleReload = () => {
+    if (allCsvWords.length === 0 || isReloading) return;
+
+    setIsReloading(true);
+    setTimeout(() => {
+      loadRandomWords(allCsvWords);
+      setIsReloading(false);
+    }, 300);
+  };
 
   const handleSaveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
@@ -74,7 +94,6 @@ const Learn = () => {
       setError("Please sign in to save sentences.");
       return;
     }
-
     try {
       const dictionaryRef = ref(database, `users/${user.uid}/dictionary`);
       const newEntry = {
@@ -90,21 +109,16 @@ const Learn = () => {
         )
       );
       await updateStreak(user.uid);
-      toast.success("Sentence saved successfully!");
+      toast.success("Sentence saved!");
     } catch (err) {
-      console.error("Error saving sentence:", err);
-      setError("Could not save sentence. Please try again.");
-      toast.error("Failed to save sentence.");
+      console.error("Error saving:", err);
+      toast.error("Failed to save.");
     }
   };
 
   const handleRemoveWord = async (word: DictionaryEntry, index: number) => {
     const user = auth.currentUser;
-    if (!user || !word.id) {
-      setError("Please sign in to remove sentences.");
-      return;
-    }
-
+    if (!user || !word.id) return;
     try {
       const wordRef = ref(database, `users/${user.uid}/dictionary/${word.id}`);
       await remove(wordRef);
@@ -113,35 +127,82 @@ const Learn = () => {
           i === index ? { ...w, saved: false, id: undefined } : w
         )
       );
+      toast.success("Sentence removed.");
     } catch (err) {
-      console.error("Error removing sentence:", err);
-      setError("Could not remove sentence. Please try again.");
-      toast.error("Failed to remove sentence.");
+      console.error("Error removing:", err);
+      toast.error("Failed to remove.");
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 ">
+    <div className="flex flex-col items-center p-2">
       <Card className="w-full max-w-4xl shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold font-serif">
-            <div className="flex justify-between">
-              <p>Learn New Sentences</p>
-              <div className="hidden md:flex text-sm gap-2 items-end justify-center mr-5">
-                <p>Click and save to dictionary</p>
-                <CornerRightDownIcon className="size-4" />
+          <CardTitle className="text-2xl lg:text-4xl font-bold font-serif">
+            <div className="flex justify-between items-center">
+              <p style={{ fontFamily: "'Baloo 2', cursive" }}>
+                Learn New Sentences
+              </p>
+              <div className="hidden md:flex text-base gap-2 items-center mr-5">
+                <p>Click to save</p>
+                <CornerRightDownIcon className="size-5" />
               </div>
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <WordList
-            words={words}
-            error={error}
-            loading={loading}
-            onSaveWord={handleSaveWord}
-            onRemoveWord={handleRemoveWord}
-          />
+        <CardContent className="space-y-6">
+          {/* Animated Word List */}
+          <AnimatePresence mode="wait">
+            {!loading && words.length > 0 && (
+              <motion.div
+                key={words.map((w) => w.english).join("-")}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <WordList
+                  words={words}
+                  error={error}
+                  loading={loading}
+                  onSaveWord={handleSaveWord}
+                  onRemoveWord={handleRemoveWord}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Loading state */}
+          {loading && <LoadingSpinner />}
+
+          {/* RELOAD BUTTON with animation */}
+          {!loading && allCsvWords.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex justify-center pt-4"
+            >
+              <Button
+                onClick={handleReload}
+                disabled={isReloading}
+                size="lg"
+                className="bg-[#F6BE2C] hover:bg-[#e0a800] text-gray-900 font-bold shadow-md text-lg"
+              >
+                <motion.div
+                  animate={{ rotate: isReloading ? 360 : 0 }}
+                  transition={{
+                    duration: 0.6,
+                    repeat: isReloading ? Infinity : 0,
+                    ease: "linear",
+                  }}
+                >
+                  <RefreshCw className="size-5 mr-2" />
+                </motion.div>
+                {isReloading ? "Loading..." : "Load New Sentences"}
+              </Button>
+            </motion.div>
+          )}
         </CardContent>
       </Card>
     </div>

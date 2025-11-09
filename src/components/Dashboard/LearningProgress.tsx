@@ -177,7 +177,7 @@ const LearningProgress = () => {
   return (
     <Card className="mb-8">
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:justify-between items-center justify-center md:justify-between md:px-8">
+        <div className="flex flex-col md:flex-row md:justify-between items-center justify-center md:px-8">
           <CardTitle>Learning Progress</CardTitle>
           <Tabs defaultValue="week" className="mt-4 md:mt-0">
             <TabsList>

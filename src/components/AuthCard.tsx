@@ -11,7 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Star, Trophy, Volume2 } from "lucide-react";
+import { BookOpen, Eye, EyeOff, Star, Trophy, Zap } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { parseFirebaseError } from "@/lib/firebaseErrorParser";
 
@@ -23,6 +23,8 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [resetMessage, setResetMessage] = useState("");
@@ -34,11 +36,9 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
     useState(false);
   const navigate = useNavigate();
   const googleProvider = new GoogleAuthProvider();
-
   const debouncedEmail = useDebounce(email, 500);
   const debouncedPassword = useDebounce(password, 500);
   const debouncedConfirmPassword = useDebounce(confirmPassword, 500);
-
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -210,28 +210,60 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg">
+    <Card className="w-full max-w-lg shadow-lg bg-gray-900/95">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold font-serif">
-          Learn Spanish with Ease
+        <CardTitle
+          style={{ fontFamily: "'Baloo 2', cursive" }}
+          className="text-4xl md:text-5xl text-white tracking-wide text-center drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]"
+        >
+          <img
+            src="/favicon.svg"
+            alt="logo"
+            height={30}
+            width={30}
+            className="md:hidden inline-block mr-2 mb-1"
+          />
+          <img
+            src="/favicon.svg"
+            alt="logo"
+            height={50}
+            width={50}
+            className="hidden md:inline-block mr-2 mb-1"
+          />
+          IdioMastery
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <ul className="space-y-4 text-base">
+        <h1 className="text-xl md:text-3xl text-center font-bold   text-[#F6BE2C]">
+          Learn Spanish with Ease
+        </h1>
+        <ul className="space-y-4 text-base md:text-lg">
           <li className="flex items-center gap-3">
-            <Trophy className="w-5 h-5 text-amber-500" aria-hidden="true" />
+            <Trophy
+              className="size-5 md:size-6 text-[#1E70FB]"
+              aria-hidden="true"
+            />
             <span>Engaging quizzes to test your skills</span>
           </li>
           <li className="flex items-center gap-3">
-            <Star className="w-5 h-5 text-amber-500" aria-hidden="true" />
+            <Star
+              className="size-5 md:size-6 text-[#1E70FB]"
+              aria-hidden="true"
+            />
             <span>Save words with a vibrant dictionary</span>
           </li>
           <li className="flex items-center gap-3">
-            <Volume2 className="w-5 h-5 text-amber-500" aria-hidden="true" />
-            <span>Practice pronunciation with text-to-speech</span>
+            <Zap
+              className="size-5 md:size-6 text-[#1E70FB]"
+              aria-hidden="true"
+            />
+            <span>Match sentences before time runs out</span>
           </li>
           <li className="flex items-center gap-3">
-            <BookOpen className="w-5 h-5 text-amber-500" aria-hidden="true" />
+            <BookOpen
+              className="size-5 md:size-6 text-[#1E70FB]"
+              aria-hidden="true"
+            />
             <span>Track progress with daily streaks</span>
           </li>
         </ul>
@@ -241,18 +273,31 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
             placeholder="Email"
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            className="focus:ring-2 focus:ring-sky-600"
+            className="focus:ring-2 focus:ring-[#1E70FB] !text-lg py-5 placeholder:text-lg"
           />
-          {emailError && <p className="text-red-500 text-xs">{emailError}</p>}
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => handlePasswordChange(e.target.value)}
-            className="focus:ring-2 focus:ring-sky-600"
-          />
+          {emailError && <p className="text-red-500 text-base">{emailError}</p>}
+          <div className="relative w-full">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+              className="focus:ring-2 focus:ring-[#1E70FB] !text-lg py-5 placeholder:text-lg pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white"
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
           {passwordErrors.length > 0 && (
-            <div className="text-red-500 text-xs">
+            <div className="text-red-500 text-base">
               {passwordErrors.map((err, index) => (
                 <p key={index}>{err}</p>
               ))}
@@ -260,39 +305,59 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
           )}
           {isSignUp && (
             <>
-              <Input
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-                className="focus:ring-2 focus:ring-sky-600"
-              />
+              <div className="relative w-full">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                  className="focus:ring-2 focus:ring-[#1E70FB] !text-lg py-5 placeholder:text-lg pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-white"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+
               {confirmPasswordError && (
-                <p className="text-red-500 text-xs">{confirmPasswordError}</p>
+                <p className="text-red-500 text-base">{confirmPasswordError}</p>
               )}
             </>
           )}
           <Button
             onClick={handleAuth}
             disabled={loading}
-            className="bg-sky-700 hover:bg-sky-800 text-white"
+            style={{ fontFamily: "'Baloo 2', cursive" }}
+            className="bg-[#1E70FB] hover:bg-[#114399] text-white text-xl md:text-2xl flex pt-6 pb-5 items-center justify-center w-full"
           >
-            {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
+            {loading
+              ? "Loading..."
+              : isSignUp
+              ? "Create an account"
+              : "Continue"}
           </Button>
           {!isSignUp && (
             <Button
               variant="link"
               onClick={handlePasswordReset}
               disabled={loading}
+              className="text-base cursor-pointer hover:text-[#1E70FB]"
             >
-              I don't remember my password
+              <p>I don't remember my password</p>
             </Button>
           )}
-          <p className="text-sm text-center">
+          <p className="text-base text-center">
             {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
             <Link
               to={isSignUp ? "/sign-in" : "/sign-up"}
-              className="text-blue-500 hover:underline"
+              className="text-[#1E70FB] hover:underline"
             >
               {isSignUp ? "Sign In" : "Sign Up"}
             </Link>
@@ -304,11 +369,11 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
           <div className="border-t w-full flex items-center justify-center pt-4">
             <Button
               variant="outline"
-              className="flex gap-2"
+              className="flex gap-2 text-lg p-6"
               onClick={handleGoogleAuth}
               disabled={loading}
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="size-6 mr-1" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

@@ -1,4 +1,4 @@
-import DictionaryTable from "@/components/DictionaryTable";
+import DictionaryTable from "@/components/LearnDictionary/DictionaryTable";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { WordListProps } from "@/lib/types/WordListProps";
@@ -11,7 +11,7 @@ const WordList: React.FC<WordListProps> = ({
   onSaveWord,
   onRemoveWord,
 }) => {
-  const displayWords = words || entries || []; // Use words if provided, fallback to entries, then empty array
+  const displayWords = words || entries || [];
 
   return (
     <>

@@ -3,8 +3,10 @@ import MenuSheet from "./MenuSheet";
 
 const MobileMenu = () => {
   return (
-    <div className="w-full md:hidden flex items-center justify-end">
-      <ThemeToggle />
+    <div className="w-full lg:hidden flex items-center justify-end gap-2">
+      <div className="hidden md:block">
+        <ThemeToggle />
+      </div>
       <MenuSheet />
     </div>
   );

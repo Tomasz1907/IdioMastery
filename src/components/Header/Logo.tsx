@@ -1,11 +1,11 @@
 const Logo = () => {
   return (
-    <div className="flex items-center font-semibold text-xl drop-shadow-md mr-12 font-serif gap-2">
-      <img src="/favicon.svg" alt="logo" height={20} width={20} />
-      <div className="flex">
-        <p className="text-white">Idio</p>
-        <p className="text-yellow-400">mastery</p>
-      </div>
+    <div
+      style={{ fontFamily: "'Baloo 2', cursive" }}
+      className="text-white text-2xl flex items-center justify-center font-semibold drop-shadow-md mr-12 lg:mr-24 font-serif gap-2 hover:text-[#F6BE2C] w-full"
+    >
+      <img src="/favicon.svg" alt="Logo" className="w-8 h-8 mb-1 " />
+      <p>IdioMastery</p>
     </div>
   );
 };
