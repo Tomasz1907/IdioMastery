@@ -156,8 +156,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-      const userUID = auth.currentUser?.uid.slice(-6);
-      navigate(`/${userUID}`);
+      navigate(`/`);
     } catch (error: any) {
       setError(parseFirebaseError(error.code));
     } finally {
@@ -171,8 +170,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ isSignUp = false }) => {
     setResetMessage("");
     try {
       await signInWithPopup(auth, googleProvider);
-      const userUID = auth.currentUser?.uid.slice(-6);
-      navigate(`/${userUID}`);
+      navigate(`/`);
     } catch (error: any) {
       setError(parseFirebaseError(error.code));
     } finally {
