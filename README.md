@@ -4,6 +4,20 @@ A **fun, interactive, and gamified** language learning app to master Spanish voc
 
 ---
 
+## Live Demo
+
+[https://idiomastery.web.app/](https://idiomastery.web.app/)
+
+---
+
+## Screenshots
+
+| Learn                                    | Quiz                                   | Match                                    |
+| ---------------------------------------- | -------------------------------------- | ---------------------------------------- |
+| ![Learn](./public/screenshots/Learn.jpg) | ![Quiz](./public/screenshots/Quiz.jpg) | ![Match](./public/screenshots/Match.jpg) |
+
+---
+
 ## Features
 
 - **Dashboard**: Check your progress, stay motivated
@@ -31,17 +45,3 @@ Dataset from https://www.kaggle.com/datasets/lonnieqin/englishspanish-translatio
 # Auth page background
 
 Background picture from https://cdn.pixabay.com/photo/2017/12/30/16/52/mountain-3050474_1280.jpg by Monigocan
-
-## Live Demo
-
-[https://idiomastery.web.app/](https://idiomastery.web.app/)
-
----
-
-## Screenshots
-
-| Learn                                    | Quiz                                   | Match                                    |
-| ---------------------------------------- | -------------------------------------- | ---------------------------------------- |
-| ![Learn](./public/screenshots/Learn.jpg) | ![Quiz](./public/screenshots/Quiz.jpg) | ![Match](./public/screenshots/Match.jpg) |
-
----
